@@ -542,10 +542,10 @@
       <div class="contact-form reveal-right">
         <h3>Напишите нам</h3>
         <form id="contactForm" onsubmit="handleForm(event)">
-          <div class="form-group"><input type="text" placeholder="Ваше имя" required></div>
-          <div class="form-group"><input type="tel" placeholder="Телефон" required></div>
-          <div class="form-group"><input type="email" placeholder="Email"></div>
-          <div class="form-group"><textarea placeholder="Ваше сообщение..." required></textarea></div>
+          <div class="form-group"><input type="text" name="name" placeholder="Ваше имя" required></div>
+          <div class="form-group"><input type="tel" name="phone" placeholder="Телефон" required></div>
+          <div class="form-group"><input type="email" name="email" placeholder="Email"></div>
+          <div class="form-group"><textarea name="message" placeholder="Ваше сообщение..." required></textarea></div>
           <button type="submit" class="btn-submit">Отправить сообщение</button>
         </form>
       </div>
@@ -610,8 +610,8 @@
     <p>Оставьте номер телефона — мы перезвоним в ближайшее время!</p>
     <form onsubmit="handleModalForm(event)">
       <input type="hidden" name="context" value="call">
-      <div class="form-group"><input type="text" placeholder="Ваше имя" required></div>
-      <div class="form-group"><input type="tel" placeholder="Номер телефона" required></div>
+      <div class="form-group"><input type="text" name="name" placeholder="Ваше имя" required></div>
+      <div class="form-group"><input type="tel" name="phone" placeholder="Номер телефона" required></div>
       <button type="submit" class="btn-submit" id="modalSubmitBtn">Перезвоните мне</button>
     </form>
   </div>
@@ -713,8 +713,8 @@ function handleModalForm(e){
   e.preventDefault();
   const f=e.target;
   const ctx=f.querySelector('input[name=\"context\"]')?.value||'call';
-  const name=f.querySelector('input[placeholder*=\"Имя\"]')?.value||'';
-  const phone=f.querySelector('input[placeholder*=\"Телефон\"]')?.value||'';
+  const name=f.querySelector('input[name=\"name\"]')?.value||'';
+  const phone=f.querySelector('input[name=\"phone\"]')?.value||'';
   const cartItems=ctx==='order'?getCartSummary():'';
   const msg=ctx==='order'
     ?'🛒 НОВЫЙ ЗАКАЗ\n\nИмя: '+name+'\nТелефон: '+phone+'\n\n'+cartItems
@@ -727,10 +727,10 @@ function handleModalForm(e){
 function handleForm(e){
   e.preventDefault();
   const f=e.target;
-  const name=f.querySelector('input[placeholder*=\"Имя\"]')?.value||'';
-  const phone=f.querySelector('input[placeholder*=\"Телефон\"]')?.value||'';
-  const email=f.querySelector('input[placeholder*=\"Email\"]')?.value||'';
-  const msgText=f.querySelector('textarea')?.value||'';
+  const name=f.querySelector('input[name=\"name\"]')?.value||'';
+  const phone=f.querySelector('input[name=\"phone\"]')?.value||'';
+  const email=f.querySelector('input[name=\"email\"]')?.value||'';
+  const msgText=f.querySelector('textarea[name=\"message\"]')?.value||'';
   sendTelegram('✉ СООБЩЕНИЕ С САЙТА\n\nИмя: '+name+'\nТелефон: '+phone+'\nEmail: '+email+'\n\n'+msgText);
   showToast('Сообщение отправлено! Мы ответим в ближайшее время.');
   f.reset();
