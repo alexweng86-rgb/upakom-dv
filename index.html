@@ -661,7 +661,8 @@ const counterObserver=new IntersectionObserver((entries)=>{entries.forEach(entry
 document.querySelectorAll('.stat-number').forEach(el=>counterObserver.observe(el));
 function animateCounter(el,t){const d=2000,s=60,i=t/s;let c=0;const timer=setInterval(()=>{c+=i;if(c>=t){el.textContent=t.toLocaleString();clearInterval(timer)}else{el.textContent=Math.floor(c).toLocaleString()}},d/s)}
 let cart={};const cartCountEl=document.getElementById('cartCount');
-function addToCart(name,price){if(!cart[name])cart[name]={qty:0,price:price||0};cart[name].qty++;renderCart();event.target.classList.add('added');setTimeout(()=>event.target.classList.remove('added'),400);const ps=price?` (${Math.round(price).toLocaleString('ru-RU')} ₽)`:'';showToast('«'+name+'» добавлен в корзину'+ps)}
+function fmtPrice(n){const p=Number(n).toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,' ');return p.join(',')}
+function addToCart(name,price){if(!cart[name])cart[name]={qty:0,price:price||0};cart[name].qty++;renderCart();event.target.classList.add('added');setTimeout(()=>event.target.classList.remove('added'),400);const ps=price?` (${fmtPrice(price)} ₽)`:'';showToast('«'+name+'» добавлен в корзину'+ps)}
 function removeFromCart(name){delete cart[name];renderCart();syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart();}
 function changeQty(name,delta){const item=cart[name];if(!item)return;const n=item.qty+delta;if(n<=0){delete cart[name];syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart()}else item.qty=n;renderCart();syncCatalogQtyCard(name)}
 function setCartQty(name){const input=event.target;const val=parseInt(input.value);if(isNaN(val)||val<1){input.value=cart[name]?cart[name].qty:1;return}const item=cart[name];if(!item)return;if(val===0){delete cart[name];syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart()}else item.qty=val;renderCart();syncCatalogQtyCard(name)}
@@ -670,9 +671,9 @@ function renderCart(){const total=Object.values(cart).reduce((s,item)=>s+item.qt
   document.querySelectorAll('.cart-item').forEach(el=>el.remove());
   let sum=0;items.forEach(([name,item])=>{const price=item.price||0;sum+=item.qty*price;const div=document.createElement('div');div.className='cart-item';
     const escName=name.replace(/'/g,"\\'");
-    div.innerHTML='<div style="width:40px;height:40px;border-radius:10px;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📦</div><div class="cart-item-name">'+name+'</div><div class="cart-item-qty"><button onclick="changeQty(\''+escName+'\',-1)">−</button><input type="number" min="1" value="'+item.qty+'" onchange="setCartQty(\''+escName+'\')"><button onclick="changeQty(\''+escName+'\',1)">+</button></div><span class="cart-item-subtotal">'+Math.round(item.qty*price).toLocaleString('ru-RU')+' ₽</span><button class="cart-item-remove" onclick="removeFromCart(\''+escName+'\')">✕</button>';
+    div.innerHTML='<div style="width:40px;height:40px;border-radius:10px;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📦</div><div class="cart-item-name">'+name+'</div><div class="cart-item-qty"><button onclick="changeQty(\''+escName+'\',-1)">−</button><input type="number" min="1" value="'+item.qty+'" onchange="setCartQty(\''+escName+'\')"><button onclick="changeQty(\''+escName+'\',1)">+</button></div><span class="cart-item-subtotal">'+fmtPrice(item.qty*price)+' ₽</span><button class="cart-item-remove" onclick="removeFromCart(\''+escName+'\')">✕</button>';
     list.insertBefore(div,empty)});
-  totalEl.textContent=Math.round(sum).toLocaleString('ru-RU')+' ₽'}
+  totalEl.textContent=fmtPrice(sum)+' ₽'}
 document.getElementById('cartBtn').addEventListener('click',()=>{if(Object.keys(cart).length===0)showToast('Корзина пуста');else openCart()});
 function openCart(){document.getElementById('cartModal').classList.add('open');document.getElementById('cartBackdrop').classList.add('open');document.body.style.overflow='hidden'}
 function closeCart(){document.getElementById('cartModal').classList.remove('open');document.getElementById('cartBackdrop').classList.remove('open');document.body.style.overflow=''}
@@ -729,8 +730,8 @@ function getCartSummary(){
   const items=Object.entries(cart);
   if(!items.length)return '';
   let s='';let sum=0;
-  items.forEach(([n,it])=>{const p=it.price||0;sum+=it.qty*p;s+='• '+n+' — '+it.qty+' шт. × '+Math.round(p).toLocaleString('ru-RU')+' ₽ = '+Math.round(it.qty*p).toLocaleString('ru-RU')+' ₽\n'});
-  s+='\nИТОГО: '+Math.round(sum).toLocaleString('ru-RU')+' ₽';
+  items.forEach(([n,it])=>{const p=it.price||0;sum+=it.qty*p;s+='• '+n+' — '+it.qty+' шт. × '+fmtPrice(p)+' ₽ = '+fmtPrice(it.qty*p)+' ₽\n'});
+  s+='\nИТОГО: '+fmtPrice(sum)+' ₽';
   return s;
 }
 function sendTelegram(msg){
@@ -837,7 +838,7 @@ function renderProductCards(gName) {
   const grid = document.getElementById('productGrid');
   allProducts.forEach(p => {
     const priceNum = parseFloat(p.pr.replace(/\s/g, '').replace(',', '.'));
-    const priceDisplay = isNaN(priceNum) ? p.pr : Math.round(priceNum).toLocaleString('ru-RU');
+    const priceDisplay = isNaN(priceNum) ? p.pr : fmtPrice(priceNum);
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, "&quot;");
     const escPrice = p.pr;
     const item = cart[p.n];
@@ -845,7 +846,7 @@ function renderProductCards(gName) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.dataset.product = p.n;
-    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?Math.round(item.qty*(item.price||0)).toLocaleString('ru-RU')+' ₽':''}</span></div></div></div>`;
+    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
     grid.appendChild(card);
   });
 }
@@ -862,7 +863,7 @@ function renderSearchResults(query) {
   const grid = document.getElementById('productGrid');
   allProducts.forEach(p => {
     const priceNum = parseFloat(p.pr.replace(/\s/g, '').replace(',', '.'));
-    const priceDisplay = isNaN(priceNum) ? p.pr : Math.round(priceNum).toLocaleString('ru-RU');
+    const priceDisplay = isNaN(priceNum) ? p.pr : fmtPrice(priceNum);
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, "&quot;");
     const escPrice = p.pr;
     const icon = GROUP_ICONS[p.group] || '📦';
@@ -871,7 +872,7 @@ function renderSearchResults(query) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.dataset.product = p.n;
-    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div style="font-size:0.7rem;color:var(--gray-dark);margin-bottom:4px;">${p.group}</div><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?Math.round(item.qty*(item.price||0)).toLocaleString('ru-RU')+' ₽':''}</span></div></div></div>`;
+    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div style="font-size:0.7rem;color:var(--gray-dark);margin-bottom:4px;">${p.group}</div><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
     grid.appendChild(card);
   });
 }
@@ -902,7 +903,7 @@ function syncCatalogQtyCard(name) {
       if (addBtn) addBtn.style.display = 'none';
       qtyCtrl.classList.add('show');
       if (qtyCount) qtyCount.textContent = item.qty;
-      if (subtotalEl) subtotalEl.textContent = Math.round(item.qty * (item.price || 0)).toLocaleString('ru-RU') + ' ₽';
+      if (subtotalEl) subtotalEl.textContent = fmtPrice(item.qty * (item.price || 0)) + ' ₽';
     } else {
       if (addBtn) addBtn.style.display = '';
       qtyCtrl.classList.remove('show');
@@ -1005,7 +1006,7 @@ function answer(q) {
   if (!top.length) return '😕 Не нашёл товаров по вашему запросу. Попробуйте другие слова, например: «стаканы», «пакеты», «перчатки», «тарелки». Или посмотрите разделы каталога слева.';
   const priceNum = s => {
     const n = parseFloat(s.replace(/\s/g, '').replace(',', '.'));
-    return isNaN(n) ? s : Math.round(n).toLocaleString('ru-RU') + ' ₽';
+    return isNaN(n) ? s : fmtPrice(n) + ' ₽';
   };
   const maxScore = top[0].score;
   const exact = top.filter(p => p.score >= maxScore * 0.8);
@@ -1032,7 +1033,7 @@ function chatAddToCart(name, price) {
   cart[name].qty++;
   renderCart();
   syncAllCatalogQtys();
-  const ps = numPrice ? ' (' + Math.round(numPrice).toLocaleString('ru-RU') + ' ₽)' : '';
+  const ps = numPrice ? ' (' + fmtPrice(numPrice) + ' ₽)' : '';
   showToast('«' + name + '» добавлен в корзину' + ps);
 }
 function goToProduct(name, group) {
