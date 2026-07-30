@@ -712,9 +712,10 @@ modalOverlay.addEventListener('click',(e)=>{if(e.target===modalOverlay)closeModa
 function handleModalForm(e){
   e.preventDefault();
   const f=e.target;
-  const ctx=f.querySelector('input[name=\"context\"]')?.value||'call';
-  const name=f.querySelector('input[name=\"name\"]')?.value||'';
-  const phone=f.querySelector('input[name=\"phone\"]')?.value||'';
+  const inp=f.elements;
+  const ctx=(inp['context']||{}).value||'call';
+  const name=inp['name']?.value||'';
+  const phone=inp['phone']?.value||'';
   const cartItems=ctx==='order'?getCartSummary():'';
   const msg=ctx==='order'
     ?'🛒 НОВЫЙ ЗАКАЗ\n\nИмя: '+name+'\nТелефон: '+phone+'\n\n'+cartItems
@@ -727,10 +728,11 @@ function handleModalForm(e){
 function handleForm(e){
   e.preventDefault();
   const f=e.target;
-  const name=f.querySelector('input[name=\"name\"]')?.value||'';
-  const phone=f.querySelector('input[name=\"phone\"]')?.value||'';
-  const email=f.querySelector('input[name=\"email\"]')?.value||'';
-  const msgText=f.querySelector('textarea[name=\"message\"]')?.value||'';
+  const inp=f.elements;
+  const name=inp['name']?.value||'';
+  const phone=inp['phone']?.value||'';
+  const email=inp['email']?.value||'';
+  const msgText=inp['message']?.value||'';
   sendTelegram('✉ СООБЩЕНИЕ С САЙТА\n\nИмя: '+name+'\nТелефон: '+phone+'\nEmail: '+email+'\n\n'+msgText);
   showToast('Сообщение отправлено! Мы ответим в ближайшее время.');
   f.reset();
