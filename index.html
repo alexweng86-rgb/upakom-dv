@@ -969,7 +969,9 @@ function answer(q) {
   const words = lq.replace(/[^а-яёa-z0-9\s]/gi, ' ').split(/\s+/).filter(Boolean);
   const stopWords = /сколько|цена|стоит|почем|есть|найти|нужен|нужна|нужно|купить|ищу|покажи|дай|хочу|нужен|нужна|стоят|стоимость/i;
   const products = [];
-  CATALOG_DATA.forEach(g => g.subs.forEach(sub => sub.p.forEach(p => {
+  CATALOG_DATA.forEach(g => {
+    g.subs.forEach(sub => {
+      sub.p.forEach(p => {
     let score = 0;
     const pn = p.n.toLowerCase();
     const gn = g.g.toLowerCase();
@@ -981,7 +983,7 @@ function answer(q) {
       if (pn.indexOf(w) === 0) score += 2;
     });
     if (score > 0) products.push({ n: p.n, pr: p.pr, u: p.u, g: g.g, score });
-  }));
+  });});});
   products.sort((a, b) => b.score - a.score);
   const top = products.slice(0, 8);
   if (!top.length) return '😕 Не нашёл товаров по вашему запросу. Попробуйте другие слова, например: «стаканы», «пакеты», «перчатки», «тарелки». Или посмотрите разделы каталога слева.';
