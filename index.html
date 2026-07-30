@@ -746,7 +746,7 @@ function getCartSummary(){
 function sendTelegram(msg){
   const token='8856464905:AAEGV0wm79rbD0sTJCkdMunHYaILsR0jlOY';
   const chatId='2032320805';
-  fetch('https://telegram-proxy.alexweng86.workers.dev',{
+  fetch('/telegram-proxy',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({token,chat_id:chatId,text:msg})
