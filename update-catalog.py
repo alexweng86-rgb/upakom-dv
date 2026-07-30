@@ -41,6 +41,7 @@ def parse_csv(path):
         c1 = row[1].strip() if len(row) > 1 else ""
         c2 = row[2].strip() if len(row) > 2 else ""
         c4 = row[4].strip() if len(row) > 4 else ""
+        c5 = row[5].strip() if len(row) > 5 else ""
         c6 = row[6].strip() if len(row) > 6 else ""
 
         is_cat = bool(c1 and not c2)
@@ -60,7 +61,7 @@ def parse_csv(path):
             if current_group is not None:
                 if not current_group["subs"]:
                     current_group["subs"].append({"n": "Основной", "p": []})
-                current_group["subs"][-1]["p"].append({"n": c2, "pr": c6, "u": c4})
+                current_group["subs"][-1]["p"].append({"n": c2, "pr": c6, "u": c4, "pq": c5})
             prev_was_cat = False
 
         else:
