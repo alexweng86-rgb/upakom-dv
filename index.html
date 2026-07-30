@@ -955,6 +955,7 @@ let chatAutoShown = false;
 setTimeout(() => {
   if (!chatOpen && !chatAutoShown) {
     chatAutoShown = true;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     playClick();
     toggleChat();
   }
