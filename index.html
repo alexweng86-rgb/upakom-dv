@@ -350,6 +350,11 @@
     .chat-typing span:nth-child(2){animation-delay:0.2s}
     .chat-typing span:nth-child(3){animation-delay:0.4s}
     @keyframes typing{0%,60%,100%{opacity:0.3;transform:scale(0.8)}30%{opacity:1;transform:scale(1)}}
+    .chat-order-btn,.chat-call-btn{display:inline-block;padding:10px 16px;border-radius:12px;border:none;font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:var(--font);margin:4px 0}
+    .chat-order-btn{background:var(--blue);color:var(--white)}
+    .chat-order-btn:hover{box-shadow:0 4px 16px rgba(0,68,255,0.35);transform:scale(1.03)}
+    .chat-call-btn{background:var(--gray);color:var(--black)}
+    .chat-call-btn:hover{background:#d0d4e0;transform:scale(1.03)}
     @media(max-width:480px){
       .chat-panel{right:12px;left:12px;width:auto;bottom:90px;height:calc(100vh - 180px)}
       .chat-toggle{right:16px;bottom:16px;width:52px;height:52px;font-size:24px}
@@ -945,6 +950,7 @@ function toggleChat() {
   document.getElementById('chatPanel').classList.toggle('open', chatOpen);
   if (chatOpen) document.getElementById('chatInput').focus();
 }
+function closeChat() { if (chatOpen) toggleChat(); }
 function ask() {
   const input = document.getElementById('chatInput');
   const q = input.value.trim();
@@ -983,6 +989,17 @@ function answer(q) {
   if (/контакт|адрес|телефон|как найти|где/i.test(lq)) return 'Наш адрес: г. Комсомольск-на-Амуре, ул. Гаражная, 2а<br>📞 +7 (4217) 54-49-45<br>📱 8 (963) 828-81-14<br>✉ upakom@yandex.ru<br>🕐 Пн–Пт 9:00–18:00, Сб 9:00–15:00';
   if (/доставк|оплат/i.test(lq)) return '🚚 Доставка по г. Комсомольск-на-Амуре и Хабаровскому краю.<br>💰 Оплата наличными или безналичным расчётом для юридических лиц.<br>Уточните условия у нашего менеджера — кнопка «Заказать звонок» внизу.';
   if (/ассортимент|каталог|вс[её] товар/i.test(lq)) return 'У нас более 5000 товаров: одноразовая посуда, пакеты, пищевая упаковка, подарочная упаковка, хозтовары, бытовая химия. Выберите раздел в каталоге слева.';
+  if (/заказ|оформить|купить/i.test(lq) && !/как|что|почем|сколько|цена|стоит|есть|найти/i.test(lq)) {
+    const cartItems = Object.entries(cart);
+    if (cartItems.length === 0) return 'Для оформления заказа добавьте товары в корзину из каталога, затем нажмите кнопку «Оформить заказ» в корзине или внизу страницы.';
+    let summary = '🛒 <b>Ваш заказ:</b><br>';
+    let total = 0;
+    cartItems.forEach(([n, it]) => { const p = it.price || 0; total += it.qty * p; summary += '• ' + n + ' — ' + it.qty + ' шт. × ' + fmtPrice(p) + '₽ = ' + fmtPrice(it.qty * p) + '₽<br>'; });
+    summary += '<br><b>Итого: ' + fmtPrice(total) + ' ₽</b><br><br>';
+    summary += '<button class="chat-order-btn" onclick="closeChat();openModal(\'order\')">🛒 Оформить заказ</button>';
+    summary += ' <button class="chat-call-btn" onclick="closeChat();openModal(\'call\')">📞 Заказать звонок</button>';
+    return summary;
+  }
   const words = lq.replace(/[^а-яёa-z0-9\s]/gi, ' ').split(/\s+/).filter(Boolean);
   const stopWords = /сколько|цена|стоит|почем|есть|найти|нужен|нужна|нужно|купить|ищу|покажи|дай|хочу|нужен|нужна|стоят|стоимость/i;
   const products = [];
