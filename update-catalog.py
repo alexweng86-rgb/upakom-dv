@@ -4,10 +4,12 @@
 Для установки планировщика:  python3 update-catalog.py --setup
 """
 
-import csv, json, os, sys, glob
+import csv, json, os, sys, glob, subprocess
 from datetime import datetime
 
 SITE_DIR = os.path.dirname(os.path.abspath(__file__))
+GH_BIN = os.path.expanduser("~/bin/gh")
+GIT_BIN = "/usr/bin/git"
 PRICE_DIR = os.path.expanduser(
     "~/Library/CloudStorage/GoogleDrive-alexweng86@gmail.com/"
     "Мой диск/Упаком Работа/Прайс лист"
@@ -77,6 +79,29 @@ def write_js(data):
     print(f"Обновлено: {datetime.now().strftime('%d.%m.%Y %H:%M')}")
 
 
+def git_commit_and_push():
+    """Коммит и пуш catalog-data.js в GitHub Pages."""
+    env = os.environ.copy()
+    env["PATH"] = "/usr/bin:/bin:/usr/local/bin:" + os.path.expanduser("~/bin")
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    try:
+        subprocess.run([GIT_BIN, "-C", SITE_DIR, "add", "-A"],
+                       capture_output=True, env=env, check=True)
+        r = subprocess.run([GIT_BIN, "-C", SITE_DIR, "diff", "--cached", "--quiet"],
+                           capture_output=True, env=env)
+        if r.returncode == 0:
+            print("Нет изменений, коммит не требуется.")
+            return
+        subprocess.run([GIT_BIN, "-C", SITE_DIR, "commit", "-m",
+                        f"Автообновление цен {datetime.now().strftime('%d.%m.%Y %H:%M')}"],
+                       capture_output=True, env=env, check=True)
+        subprocess.run([GIT_BIN, "-C", SITE_DIR, "push"],
+                       capture_output=True, env=env, check=True)
+        print("Изменения отправлены на GitHub.")
+    except subprocess.CalledProcessError as e:
+        print(f"Ошибка git: {e.stderr.decode().strip()}")
+
+
 def setup_launchd():
     label = "com.upakom.update-catalog"
     plist_path = os.path.expanduser(f"~/Library/LaunchAgents/{label}.plist")
@@ -92,6 +117,11 @@ def setup_launchd():
         <string>{sys.executable}</string>
         <string>{os.path.abspath(__file__)}</string>
     </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/bin:/bin:/usr/local/bin:{os.path.expanduser("~/bin")}</string>
+    </dict>
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
@@ -120,6 +150,7 @@ if __name__ == "__main__":
     csv_file = find_latest_csv()
     data = parse_csv(csv_file)
     write_js(data)
+    git_commit_and_push()
     if "--setup" in sys.argv:
         setup_launchd()
     print("Готово.")
