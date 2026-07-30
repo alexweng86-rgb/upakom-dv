@@ -131,6 +131,7 @@
     .product-card-body{padding:14px;flex:1;display:flex;flex-direction:column}
     .product-card-name{font-size:0.82rem;font-weight:600;line-height:1.3;margin-bottom:6px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
     .product-card-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .product-card-pack{font-size:0.72rem;color:var(--gray-dark);margin-bottom:8px;min-height:1.2em}
     .product-card-unit{font-size:0.75rem;color:var(--gray-dark)}
     .product-card-price{font-size:1.05rem;font-weight:800;color:var(--black)}
     .product-card-actions{display:flex;align-items:center;gap:6px;margin-top:auto}
@@ -334,6 +335,7 @@
     .chat-product-info{flex:1;min-width:0}
     .chat-product-name{font-weight:600;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .chat-product-meta{font-size:0.7rem;color:var(--gray-dark)}
+    .chat-product-pack{font-size:0.65rem;color:#999}
     .chat-product-actions{display:flex;gap:4px;flex-shrink:0}
     .chat-product-add,.chat-product-view{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:var(--transition)}
     .chat-product-add{background:var(--blue);color:var(--white)}
@@ -667,6 +669,7 @@ document.querySelectorAll('.stat-number').forEach(el=>counterObserver.observe(el
 function animateCounter(el,t){const d=2000,s=60,i=t/s;let c=0;const timer=setInterval(()=>{c+=i;if(c>=t){el.textContent=t.toLocaleString();clearInterval(timer)}else{el.textContent=Math.floor(c).toLocaleString()}},d/s)}
 let cart={};const cartCountEl=document.getElementById('cartCount');
 function fmtPrice(n){const p=Number(n).toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,' ');return p.join(',')}
+function fmtPack(pq){if(!pq)return '';var parts=pq.split('/');if(parts.length<3)return '';var p=parseInt(parts[1]),c=parseInt(parts[2]);var a=[];if(p>0)a.push(p+' шт/уп');if(c>0)a.push(c+' шт/ящ');return a.join(' · ')}
 function addToCart(name,price){if(!cart[name])cart[name]={qty:0,price:price||0};cart[name].qty++;renderCart();event.target.classList.add('added');setTimeout(()=>event.target.classList.remove('added'),400);const ps=price?` (${fmtPrice(price)} ₽)`:'';showToast('«'+name+'» добавлен в корзину'+ps)}
 function removeFromCart(name){delete cart[name];renderCart();syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart();}
 function changeQty(name,delta){const item=cart[name];if(!item)return;const n=item.qty+delta;if(n<=0){delete cart[name];syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart()}else item.qty=n;renderCart();syncCatalogQtyCard(name)}
@@ -851,7 +854,7 @@ function renderProductCards(gName) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.dataset.product = p.n;
-    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
+    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
     grid.appendChild(card);
   });
 }
@@ -877,7 +880,7 @@ function renderSearchResults(query) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.dataset.product = p.n;
-    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div style="font-size:0.7rem;color:var(--gray-dark);margin-bottom:4px;">${p.group}</div><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
+    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div style="font-size:0.7rem;color:var(--gray-dark);margin-bottom:4px;">${p.group}</div><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
     grid.appendChild(card);
   });
 }
@@ -1016,7 +1019,7 @@ function answer(q) {
       if (pn.startsWith(w)) score += w.length * 0.5;
       if (pn.indexOf(w) === 0) score += 2;
     });
-    if (score > 0) products.push({ n: p.n, pr: p.pr, u: p.u, g: g.g, score });
+    if (score > 0) products.push({ n: p.n, pr: p.pr, u: p.u, g: g.g, pq: p.pq, score });
   });});});
   products.sort((a, b) => b.score - a.score);
   const top = products.slice(0, 8);
@@ -1035,7 +1038,7 @@ function answer(q) {
     const escPrice = p.pr.replace(/'/g, "\\'");
     html += '<div class="chat-product">';
     html += '<div class="chat-product-info"><div class="chat-product-name">' + p.n + '</div>';
-    html += '<div class="chat-product-meta">' + p.g + ' · ' + p.u + ' · <strong>' + priceNum(p.pr) + '</strong></div></div>';
+    html += '<div class="chat-product-meta">' + p.g + ' · ' + p.u + ' · <strong>' + priceNum(p.pr) + '</strong>' + (fmtPack(p.pq)?'<br><span class="chat-product-pack">'+fmtPack(p.pq)+'</span>':'') + '</div></div>';
     html += '<div class="chat-product-actions">';
     html += '<button class="chat-product-add" onclick="chatAddToCart(\'' + escName + '\',\'' + escPrice + '\')" title="В корзину">+</button>';
     html += '<button class="chat-product-view" onclick="goToProduct(\'' + escName + '\',\'' + p.g.replace(/'/g, "\\'") + '\')" title="В каталог">📂</button>';
