@@ -746,10 +746,10 @@ function getCartSummary(){
 function sendTelegram(msg){
   const token='8856464905:AAEGV0wm79rbD0sTJCkdMunHYaILsR0jlOY';
   const chatId='2032320805';
-  fetch('https://api.telegram.org/bot'+token+'/sendMessage',{
+  fetch('https://telegram-proxy.alexweng86.workers.dev',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({chat_id:chatId,text:msg})
+    body:JSON.stringify({token,chat_id:chatId,text:msg})
   }).catch(()=>{});
 }
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){const h=this.getAttribute('href');if(h==='#')return;const t=document.querySelector(h);if(t){e.preventDefault();const o=header.offsetHeight;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-o,behavior:'smooth'})}})});
