@@ -276,7 +276,8 @@
     .cart-empty svg{margin-bottom:16px;opacity:0.3}
     .cart-empty p{font-size:1rem}
     .cart-item{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid #f0f2f8}
-    .cart-item-name{flex:1;font-weight:600;font-size:0.95rem}
+    .cart-item-name{font-weight:600;font-size:0.95rem;line-height:1.3}
+    .cart-item-pack{font-size:0.72rem;color:var(--gray-dark);margin-top:2px}
     .cart-item-qty{display:flex;align-items:center;gap:10px}
     .cart-item-qty button{width:32px;height:32px;border-radius:50%;border:1px solid #d0d4e0;background:var(--white);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
     .cart-item-qty button:hover{background:var(--blue);color:var(--white);border-color:var(--blue)}
@@ -670,7 +671,7 @@ function animateCounter(el,t){const d=2000,s=60,i=t/s;let c=0;const timer=setInt
 let cart={};const cartCountEl=document.getElementById('cartCount');
 function fmtPrice(n){const p=Number(n).toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,' ');return p.join(',')}
 function fmtPack(pq){if(!pq)return '';var parts=pq.split('/');if(parts.length<3)return '';var p=parseInt(parts[1]),c=parseInt(parts[2]);var a=[];if(p>0)a.push(p+' шт/уп');if(c>0)a.push(c+' шт/ящ');return a.join(' · ')}
-function addToCart(name,price){if(!cart[name])cart[name]={qty:0,price:price||0};cart[name].qty++;renderCart();event.target.classList.add('added');setTimeout(()=>event.target.classList.remove('added'),400);const ps=price?` (${fmtPrice(price)} ₽)`:'';showToast('«'+name+'» добавлен в корзину'+ps)}
+function addToCart(name,price,pq){if(!cart[name])cart[name]={qty:0,price:price||0,pq:pq||''};cart[name].qty++;renderCart();event.target.classList.add('added');setTimeout(()=>event.target.classList.remove('added'),400);const ps=price?` (${fmtPrice(price)} ₽)`:'';showToast('«'+name+'» добавлен в корзину'+ps)}
 function removeFromCart(name){delete cart[name];renderCart();syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart();}
 function changeQty(name,delta){const item=cart[name];if(!item)return;const n=item.qty+delta;if(n<=0){delete cart[name];syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart()}else item.qty=n;renderCart();syncCatalogQtyCard(name)}
 function setCartQty(name){const input=event.target;const val=parseInt(input.value);if(isNaN(val)||val<1){input.value=cart[name]?cart[name].qty:1;return}const item=cart[name];if(!item)return;if(val===0){delete cart[name];syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart()}else item.qty=val;renderCart();syncCatalogQtyCard(name)}
@@ -679,7 +680,8 @@ function renderCart(){const total=Object.values(cart).reduce((s,item)=>s+item.qt
   document.querySelectorAll('.cart-item').forEach(el=>el.remove());
   let sum=0;items.forEach(([name,item])=>{const price=item.price||0;sum+=item.qty*price;const div=document.createElement('div');div.className='cart-item';
     const escName=name.replace(/'/g,"\\'");
-    div.innerHTML='<div style="width:40px;height:40px;border-radius:10px;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📦</div><div class="cart-item-name">'+name+'</div><div class="cart-item-qty"><button onclick="changeQty(\''+escName+'\',-1)">−</button><input type="number" min="1" value="'+item.qty+'" onchange="setCartQty(\''+escName+'\')"><button onclick="changeQty(\''+escName+'\',1)">+</button></div><span class="cart-item-subtotal">'+fmtPrice(item.qty*price)+' ₽</span><button class="cart-item-remove" onclick="removeFromCart(\''+escName+'\')">✕</button>';
+    const packLabel = item.pq ? fmtPack(item.pq) : '';
+    div.innerHTML='<div style="width:40px;height:40px;border-radius:10px;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📦</div><div style="flex:1;min-width:0;"><div class="cart-item-name">'+name+'</div>'+(packLabel?'<div class="cart-item-pack">'+packLabel+'</div>':'')+'</div><div class="cart-item-qty"><button onclick="changeQty(\''+escName+'\',-1)">−</button><input type="number" min="1" value="'+item.qty+'" onchange="setCartQty(\''+escName+'\')"><button onclick="changeQty(\''+escName+'\',1)">+</button></div><span class="cart-item-subtotal">'+fmtPrice(item.qty*price)+' ₽</span><button class="cart-item-remove" onclick="removeFromCart(\''+escName+'\')">✕</button>';
     list.insertBefore(div,empty)});
   totalEl.textContent=fmtPrice(sum)+' ₽'}
 document.getElementById('cartBtn').addEventListener('click',()=>{if(Object.keys(cart).length===0)showToast('Корзина пуста');else openCart()});
@@ -849,12 +851,13 @@ function renderProductCards(gName) {
     const priceDisplay = isNaN(priceNum) ? p.pr : fmtPrice(priceNum);
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, "&quot;");
     const escPrice = p.pr;
+    const escPq = (p.pq||'').replace(/'/g, "\\'");
     const item = cart[p.n];
     const inCart = item && item.qty > 0;
     const card = document.createElement('div');
     card.className = 'product-card';
     card.dataset.product = p.n;
-    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
+    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}','${escPq}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
     grid.appendChild(card);
   });
 }
@@ -880,14 +883,14 @@ function renderSearchResults(query) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.dataset.product = p.n;
-    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div style="font-size:0.7rem;color:var(--gray-dark);margin-bottom:4px;">${p.group}</div><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
+    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div style="font-size:0.7rem;color:var(--gray-dark);margin-bottom:4px;">${p.group}</div><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}','${escPq}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
     grid.appendChild(card);
   });
 }
 
-function addToCatalogProductCard(name, price, btn) {
+function addToCatalogProductCard(name, price, pq, btn) {
   const numPrice = parseFloat(String(price).replace(/\s/g, '').replace(',', '.'));
-  addToCart(name, isNaN(numPrice) ? 0 : numPrice);
+  addToCart(name, isNaN(numPrice) ? 0 : numPrice, pq || '');
   syncCatalogQtyCard(name);
 }
 
@@ -1036,24 +1039,25 @@ function answer(q) {
   show.forEach((p, i) => {
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, '&quot;');
     const escPrice = p.pr.replace(/'/g, "\\'");
+    const escPq = (p.pq||'').replace(/'/g, "\\'");
     html += '<div class="chat-product">';
     html += '<div class="chat-product-info"><div class="chat-product-name">' + p.n + '</div>';
     html += '<div class="chat-product-meta">' + p.g + ' · ' + p.u + ' · <strong>' + priceNum(p.pr) + '</strong>' + (fmtPack(p.pq)?'<br><span class="chat-product-pack">'+fmtPack(p.pq)+'</span>':'') + '</div></div>';
     html += '<div class="chat-product-actions">';
-    html += '<button class="chat-product-add" onclick="chatAddToCart(\'' + escName + '\',\'' + escPrice + '\')" title="В корзину">+</button>';
+    html += '<button class="chat-product-add" onclick="chatAddToCart(\'' + escName + '\',\'' + escPrice + '\',\'' + escPq + '\')" title="В корзину">+</button>';
     html += '<button class="chat-product-view" onclick="goToProduct(\'' + escName + '\',\'' + p.g.replace(/'/g, "\\'") + '\')" title="В каталог">📂</button>';
     html += '</div></div>';
   });
   if (products.length > show.length) html += '<em style="font-size:0.8rem;opacity:0.7;">…и ещё ' + (products.length - show.length) + ' товаров</em>';
   return html;
 }
-function chatAddToCart(name, price) {
-  const numPrice = parseFloat(String(price).replace(/\s/g, '').replace(',', '.'));
-  if (!cart[name]) cart[name] = { qty: 0, price: isNaN(numPrice) ? 0 : numPrice };
+function chatAddToCart(name, price, pq) {
+  if (!cart[name]) cart[name] = { qty: 0, price: 0, pq: pq || '' };
   cart[name].qty++;
+  if (price) { const n = parseFloat(String(price).replace(/\s/g, '').replace(',', '.')); if (!isNaN(n)) cart[name].price = n; }
   renderCart();
   syncAllCatalogQtys();
-  const ps = numPrice ? ' (' + fmtPrice(numPrice) + ' ₽)' : '';
+  const ps = cart[name].price ? ' (' + fmtPrice(cart[name].price) + ' ₽)' : '';
   showToast('«' + name + '» добавлен в корзину' + ps);
 }
 function goToProduct(name, group) {
