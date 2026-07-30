@@ -931,23 +931,35 @@ function syncAllCatalogQtys() {
 renderCatalog();
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function playClick() {
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.frequency.value = 800;
-  gain.gain.value = 0.08;
-  osc.start();
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-  osc.stop(audioCtx.currentTime + 0.08);
+  try {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(function(){ beep(); });
+    } else {
+      beep();
+    }
+  } catch(e) {}
 }
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('button, a.btn-primary, a.btn-secondary, .btn-messenger, .social-link, .faq-item, .burger, .modal-close');
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('button, a.btn-primary, a.btn-secondary, .btn-messenger, .social-link, .faq-item, .burger, .modal-close');
   if (btn) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
-    playClick();
+    beep();
   }
 });
+function beep() {
+  try {
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = 800;
+    gain.gain.value = 0.06;
+    var t = audioCtx.currentTime + 0.01;
+    osc.start(t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+    osc.stop(t + 0.08);
+  } catch(e) {}
+}
 
 /* Assistant Chat */
 let chatOpen = false;
@@ -955,7 +967,6 @@ let chatAutoShown = false;
 setTimeout(() => {
   if (!chatOpen && !chatAutoShown) {
     chatAutoShown = true;
-    if (audioCtx.state === 'suspended') audioCtx.resume();
     playClick();
     toggleChat();
   }
