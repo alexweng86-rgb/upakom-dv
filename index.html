@@ -482,7 +482,7 @@
         <div style="margin-top:24px;padding:20px 24px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border-radius:var(--radius);color:var(--white);">
           <strong style="font-size:1rem;">Торговый отдел для юридических лиц</strong>
           <p style="font-size:0.9rem;margin-top:8px;color:var(--black);">Работаем с ИП, ООО и организациями. Персональный торговый представитель, индивидуальные условия, отсрочка платежа.</p>
-          <a href="#" class="btn-call" style="margin-top:12px;display:inline-block;border-color:rgba(255,255,255,0.5);" onclick="openModal();return false;">Связаться с отделом</a>
+          <a href="#" class="btn-call" style="margin-top:12px;display:inline-block;border-color:rgba(255,255,255,0.5);" onclick="openModal('call');return false;">Связаться с отделом</a>
         </div>
       </div>
       <div class="contact-form reveal-right">
@@ -555,9 +555,10 @@
     <h2>Заказать звонок</h2>
     <p>Оставьте номер телефона — мы перезвоним в ближайшее время!</p>
     <form onsubmit="handleModalForm(event)">
+      <input type="hidden" name="context" value="call">
       <div class="form-group"><input type="text" placeholder="Ваше имя" required></div>
       <div class="form-group"><input type="tel" placeholder="Номер телефона" required></div>
-      <button type="submit" class="btn-submit">Перезвоните мне</button>
+      <button type="submit" class="btn-submit" id="modalSubmitBtn">Перезвоните мне</button>
     </form>
   </div>
 </div>
@@ -578,7 +579,7 @@
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-total"><span>Итого:</span><span id="cartTotal">0 ₽</span></div>
-    <button class="btn-submit" onclick="openModal();closeCart();">Оформить заказ</button>
+    <button class="btn-submit" onclick="openModal('order');closeCart();">Оформить заказ</button>
   </div>
 </div>
 
@@ -614,11 +615,68 @@ document.getElementById('cartBackdrop').addEventListener('click',closeCart);
 let toastTimeout;
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>t.classList.remove('show'),3000)}
 const modalOverlay=document.getElementById('modalOverlay');
-function openModal(){modalOverlay.classList.add('open');document.body.style.overflow='hidden'}
+function openModal(ctx){
+  const title=document.querySelector('.modal h2');
+  const desc=document.querySelector('.modal p');
+  const btn=document.getElementById('modalSubmitBtn');
+  const hidden=document.querySelector('input[name="context"]');
+  if(ctx==='order'){
+    title.textContent='Оформление заказа';
+    desc.textContent='Укажите имя и телефон — мы свяжемся для подтверждения заказа.';
+    btn.textContent='Подтвердить заказ';
+    if(hidden)hidden.value='order';
+  }else{
+    title.textContent='Заказать звонок';
+    desc.textContent='Оставьте номер телефона — мы перезвоним в ближайшее время!';
+    btn.textContent='Перезвоните мне';
+    if(hidden)hidden.value='call';
+  }
+  modalOverlay.classList.add('open');document.body.style.overflow='hidden'}
 function closeModal(){modalOverlay.classList.remove('open');document.body.style.overflow=''}
 modalOverlay.addEventListener('click',(e)=>{if(e.target===modalOverlay)closeModal()});
-function handleModalForm(e){e.preventDefault();closeModal();showToast('Спасибо! Мы перезвоним вам в ближайшее время.')}
-function handleForm(e){e.preventDefault();showToast('Сообщение отправлено! Мы ответим в ближайшее время.');e.target.reset()}
+function handleModalForm(e){
+  e.preventDefault();
+  const f=e.target;
+  const ctx=f.querySelector('input[name=\"context\"]')?.value||'call';
+  const name=f.querySelector('input[placeholder*=\"Имя\"]')?.value||'';
+  const phone=f.querySelector('input[placeholder*=\"Телефон\"]')?.value||'';
+  const cartItems=ctx==='order'?getCartSummary():'';
+  const msg=ctx==='order'
+    ?'🛒 НОВЫЙ ЗАКАЗ\n\nИмя: '+name+'\nТелефон: '+phone+'\n\n'+cartItems
+    :'📞 ЗАКАЗ ЗВОНКА\n\nИмя: '+name+'\nТелефон: '+phone;
+  sendTelegram(msg);
+  closeModal();
+  showToast(ctx==='order'?'Заказ отправлен! Мы свяжемся с вами.':'Спасибо! Мы перезвоним вам.');
+  f.reset();
+}
+function handleForm(e){
+  e.preventDefault();
+  const f=e.target;
+  const name=f.querySelector('input[placeholder*=\"Имя\"]')?.value||'';
+  const phone=f.querySelector('input[placeholder*=\"Телефон\"]')?.value||'';
+  const email=f.querySelector('input[placeholder*=\"Email\"]')?.value||'';
+  const msgText=f.querySelector('textarea')?.value||'';
+  sendTelegram('✉ СООБЩЕНИЕ С САЙТА\n\nИмя: '+name+'\nТелефон: '+phone+'\nEmail: '+email+'\n\n'+msgText);
+  showToast('Сообщение отправлено! Мы ответим в ближайшее время.');
+  f.reset();
+}
+function getCartSummary(){
+  const items=Object.entries(cart);
+  if(!items.length)return '';
+  let s='';let sum=0;
+  items.forEach(([n,it])=>{const p=it.price||0;sum+=it.qty*p;s+='• '+n+' — '+it.qty+' шт. × '+Math.round(p).toLocaleString('ru-RU')+' ₽ = '+Math.round(it.qty*p).toLocaleString('ru-RU')+' ₽\n'});
+  s+='\nИТОГО: '+Math.round(sum).toLocaleString('ru-RU')+' ₽';
+  return s;
+}
+function sendTelegram(msg){
+  const token='8856464905:AAEGV0wm79rbD0sTJCkdMunHYaILsR0jlOY';
+  const chatId='2032320805';
+  fetch('https://api.telegram.org/bot'+token+'/sendMessage',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({chat_id:chatId,text:msg})
+  }).catch(()=>{});
+}
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){const h=this.getAttribute('href');if(h==='#')return;const t=document.querySelector(h);if(t){e.preventDefault();const o=header.offsetHeight;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-o,behavior:'smooth'})}})});
 function toggleFaq(el){el.classList.toggle('open')}
 
