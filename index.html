@@ -326,6 +326,17 @@
     .chat-msg .product-name{font-weight:500}
     .chat-msg .product-meta{font-size:0.8rem;color:var(--gray-dark)}
     .chat-msg .product-price{color:var(--blue);font-weight:600}
+    .chat-product{display:flex;align-items:center;gap:8px;padding:8px 10px;margin:4px 0;background:var(--white);border-radius:10px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+    .chat-product:last-child{margin-bottom:0}
+    .chat-product-info{flex:1;min-width:0}
+    .chat-product-name{font-weight:600;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .chat-product-meta{font-size:0.7rem;color:var(--gray-dark)}
+    .chat-product-actions{display:flex;gap:4px;flex-shrink:0}
+    .chat-product-add,.chat-product-view{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:var(--transition)}
+    .chat-product-add{background:var(--blue);color:var(--white)}
+    .chat-product-add:hover{transform:scale(1.15);box-shadow:0 4px 16px rgba(0,68,255,0.35)}
+    .chat-product-view{background:var(--gray);color:var(--black)}
+    .chat-product-view:hover{background:#d0d4e0;transform:scale(1.1)}
     .chat-input-wrap{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--gray)}
     .chat-input-wrap input{flex:1;padding:10px 14px;border:2px solid var(--gray);border-radius:12px;font-family:var(--font);font-size:0.9rem;outline:none;transition:border 0.3s}
     .chat-input-wrap input:focus{border-color:var(--blue)}
@@ -997,14 +1008,37 @@ function answer(q) {
   let html = 'Вот что нашлось:<br>';
   if (top.length >= 8) html += '<em style="font-size:0.8rem;opacity:0.7;">Показаны лучшие совпадения</em><br>';
   show.forEach((p, i) => {
-    html += '<div class="product-item">';
-    html += '<span class="product-name">' + p.n + '</span><br>';
-    html += '<span class="product-meta">' + p.g + ' · ' + p.u + '</span> ';
-    html += '<span class="product-price">' + priceNum(p.pr) + '</span>';
-    html += '</div>';
+    const escName = p.n.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    html += '<div class="chat-product">';
+    html += '<div class="chat-product-info"><div class="chat-product-name">' + p.n + '</div>';
+    html += '<div class="chat-product-meta">' + p.g + ' · ' + p.u + ' · <strong>' + priceNum(p.pr) + '</strong></div></div>';
+    html += '<div class="chat-product-actions">';
+    html += '<button class="chat-product-add" onclick="chatAddToCart(\'' + escName + '\')" title="В корзину">+</button>';
+    html += '<button class="chat-product-view" onclick="goToProduct(\'' + escName + '\',\'' + p.g.replace(/'/g, "\\'") + '\')" title="В каталог">📂</button>';
+    html += '</div></div>';
   });
   if (products.length > show.length) html += '<em style="font-size:0.8rem;opacity:0.7;">…и ещё ' + (products.length - show.length) + ' товаров</em>';
   return html;
+}
+function chatAddToCart(name) {
+  if (!cart[name]) cart[name] = { qty: 0, price: 0 };
+  cart[name].qty++;
+  renderCart();
+  syncAllCatalogQtys();
+  showToast('«' + name + '» добавлен в корзину');
+}
+function goToProduct(name, group) {
+  if (chatOpen) toggleChat();
+  const cat = document.getElementById('catalog');
+  if (cat) {
+    const o = document.querySelector('header').offsetHeight;
+    window.scrollTo({ top: cat.getBoundingClientRect().top + window.scrollY - o, behavior: 'smooth' });
+  }
+  if (group && groupMap[group]) selectGroup(group);
+  setTimeout(() => {
+    const card = document.querySelector('.product-card[data-product="' + name.replace(/"/g, '&quot;') + '"]');
+    if (card) { card.style.scrollMargin = '80px'; card.scrollIntoView({ behavior: 'smooth', block: 'center' }); card.style.transition = 'box-shadow 0.3s'; card.style.boxShadow = '0 0 0 3px var(--blue)'; setTimeout(() => { card.style.boxShadow = ''; }, 2000); }
+  }, 200);
 }
 </script>
 </body>
