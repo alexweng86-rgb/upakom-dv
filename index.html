@@ -955,6 +955,7 @@ let chatAutoShown = false;
 setTimeout(() => {
   if (!chatOpen && !chatAutoShown) {
     chatAutoShown = true;
+    playClick();
     toggleChat();
   }
 }, 5000);
