@@ -951,10 +951,18 @@ document.addEventListener('click', (e) => {
 
 /* Assistant Chat */
 let chatOpen = false;
+let chatAutoShown = false;
+setTimeout(() => {
+  if (!chatOpen && !chatAutoShown) {
+    chatAutoShown = true;
+    toggleChat();
+  }
+}, 5000);
 function toggleChat() {
   chatOpen = !chatOpen;
   document.getElementById('chatPanel').classList.toggle('open', chatOpen);
   if (chatOpen) document.getElementById('chatInput').focus();
+  chatAutoShown = true;
 }
 function closeChat() { if (chatOpen) toggleChat(); }
 function ask() {
