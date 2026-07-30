@@ -307,6 +307,39 @@
     .branch-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(0,68,255,0.1)}
     .branch-card .branch-num{font-size:0.75rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
     .branch-card p{font-size:0.9rem;color:var(--gray-dark);line-height:1.5}
+    /* Assistant Chat */
+    .chat-toggle{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:var(--blue);color:var(--white);border:none;font-size:28px;cursor:pointer;box-shadow:0 8px 32px rgba(0,68,255,0.4);z-index:999;transition:transform 0.3s ease,box-shadow 0.3s ease;display:flex;align-items:center;justify-content:center}
+    .chat-toggle:hover{transform:scale(1.1);box-shadow:0 12px 40px rgba(0,68,255,0.5)}
+    .chat-panel{position:fixed;bottom:100px;right:24px;width:380px;height:520px;background:var(--white);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,0.2);z-index:998;display:flex;flex-direction:column;transform:scale(0.9);opacity:0;pointer-events:none;transition:all 0.3s ease;transform-origin:bottom right;overflow:hidden}
+    .chat-panel.open{transform:scale(1);opacity:1;pointer-events:all}
+    .chat-header{background:var(--blue);color:var(--white);padding:16px 20px;display:flex;align-items:center;gap:12px}
+    .chat-header h3{font-size:1rem;font-weight:600}
+    .chat-header span{font-size:0.75rem;opacity:0.8}
+    .chat-close{margin-left:auto;background:none;border:none;color:var(--white);font-size:1.2rem;cursor:pointer;padding:4px}
+    .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
+    .chat-msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:0.9rem;line-height:1.5;animation:msgIn 0.3s ease}
+    @keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .chat-msg.bot{background:var(--gray);color:var(--black);align-self:flex-start;border-bottom-left-radius:4px}
+    .chat-msg.user{background:var(--blue);color:var(--white);align-self:flex-end;border-bottom-right-radius:4px}
+    .chat-msg .product-item{padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+    .chat-msg .product-item:last-child{border-bottom:none}
+    .chat-msg .product-name{font-weight:500}
+    .chat-msg .product-meta{font-size:0.8rem;color:var(--gray-dark)}
+    .chat-msg .product-price{color:var(--blue);font-weight:600}
+    .chat-input-wrap{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--gray)}
+    .chat-input-wrap input{flex:1;padding:10px 14px;border:2px solid var(--gray);border-radius:12px;font-family:var(--font);font-size:0.9rem;outline:none;transition:border 0.3s}
+    .chat-input-wrap input:focus{border-color:var(--blue)}
+    .chat-input-wrap button{width:44px;height:44px;border-radius:12px;background:var(--blue);color:var(--white);border:none;font-size:1.2rem;cursor:pointer;transition:background 0.3s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .chat-input-wrap button:hover{background:var(--blue-dark)}
+    .chat-typing{display:flex;gap:4px;padding:12px 16px;align-items:center}
+    .chat-typing span{width:8px;height:8px;background:#ccc;border-radius:50%;animation:typing 1.4s infinite}
+    .chat-typing span:nth-child(2){animation-delay:0.2s}
+    .chat-typing span:nth-child(3){animation-delay:0.4s}
+    @keyframes typing{0%,60%,100%{opacity:0.3;transform:scale(0.8)}30%{opacity:1;transform:scale(1)}}
+    @media(max-width:480px){
+      .chat-panel{right:12px;left:12px;width:auto;bottom:90px;height:calc(100vh - 180px)}
+      .chat-toggle{right:16px;bottom:16px;width:52px;height:52px;font-size:24px}
+    }
   </style>
 </head>
 <body>
@@ -560,6 +593,22 @@
       <div class="form-group"><input type="tel" placeholder="Номер телефона" required></div>
       <button type="submit" class="btn-submit" id="modalSubmitBtn">Перезвоните мне</button>
     </form>
+  </div>
+</div>
+
+<button class="chat-toggle" id="chatToggle" onclick="toggleChat()" title="Задать вопрос">💬</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <h3>🤖 Ассистент Упаком</h3>
+    <span>спрашивайте о товарах</span>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg bot">👋 Здравствуйте! Я ассистент Упаком ДВ. Спросите меня о товарах, ценах или наличии. Например: «Сколько стоят стаканы?» или «Есть ли пакеты для мусора?»</div>
+  </div>
+  <div class="chat-input-wrap">
+    <input type="text" id="chatInput" placeholder="Напишите вопрос..." onkeydown="if(event.key==='Enter')ask()">
+    <button onclick="ask()">➤</button>
   </div>
 </div>
 
@@ -871,6 +920,90 @@ document.addEventListener('click', (e) => {
     playClick();
   }
 });
+
+/* Assistant Chat */
+let chatOpen = false;
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chatPanel').classList.toggle('open', chatOpen);
+  if (chatOpen) document.getElementById('chatInput').focus();
+}
+function ask() {
+  const input = document.getElementById('chatInput');
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = '';
+  addMsg(q, 'user');
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMsg(answer(q), 'bot');
+  }, 300 + Math.random() * 400);
+}
+function addMsg(text, who) {
+  const el = document.createElement('div');
+  el.className = 'chat-msg ' + who;
+  el.innerHTML = text;
+  document.getElementById('chatMessages').appendChild(el);
+  el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+function showTyping() {
+  const el = document.createElement('div');
+  el.id = 'chatTyping';
+  el.className = 'chat-msg bot chat-typing';
+  el.innerHTML = '<span></span><span></span><span></span>';
+  document.getElementById('chatMessages').appendChild(el);
+  el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+function hideTyping() {
+  const el = document.getElementById('chatTyping');
+  if (el) el.remove();
+}
+function answer(q) {
+  const lq = q.toLowerCase().trim();
+  if (/здравств|привет|ку-ку|hi|hello/i.test(lq)) return 'Здравствуйте! Чем могу помочь? Спросите о товарах по названию, например: «Сколько стоят перчатки?» или «Пакеты для мусора»';
+  if (/спасиб|понял|ок|понят/i.test(lq)) return 'Пожалуйста! Если появятся вопросы — обращайтесь.';
+  if (/контакт|адрес|телефон|как найти|где/i.test(lq)) return 'Наш адрес: г. Комсомольск-на-Амуре, ул. Гаражная, 2а<br>📞 +7 (4217) 54-49-45<br>📱 8 (963) 828-81-14<br>✉ upakom@yandex.ru<br>🕐 Пн–Пт 9:00–18:00, Сб 9:00–15:00';
+  if (/доставк|оплат/i.test(lq)) return '🚚 Доставка по г. Комсомольск-на-Амуре и Хабаровскому краю.<br>💰 Оплата наличными или безналичным расчётом для юридических лиц.<br>Уточните условия у нашего менеджера — кнопка «Заказать звонок» внизу.';
+  if (/ассортимент|каталог|вс[её] товар/i.test(lq)) return 'У нас более 5000 товаров: одноразовая посуда, пакеты, пищевая упаковка, подарочная упаковка, хозтовары, бытовая химия. Выберите раздел в каталоге слева.';
+  const words = lq.replace(/[^а-яёa-z0-9\s]/gi, ' ').split(/\s+/).filter(Boolean);
+  const stopWords = /сколько|цена|стоит|почем|есть|найти|нужен|нужна|нужно|купить|ищу|покажи|дай|хочу|нужен|нужна|стоят|стоимость/i;
+  const products = [];
+  CATALOG_DATA.forEach(g => g.subs.forEach(sub => sub.p.forEach(p => {
+    let score = 0;
+    const pn = p.n.toLowerCase();
+    const gn = g.g.toLowerCase();
+    words.forEach(w => {
+      if (w.length < 2) return;
+      if (pn.includes(w)) score += w.length * 1.5;
+      if (gn.includes(w)) score += w.length * 0.8;
+      if (pn.startsWith(w)) score += w.length * 0.5;
+      if (pn.indexOf(w) === 0) score += 2;
+    });
+    if (score > 0) products.push({ n: p.n, pr: p.pr, u: p.u, g: g.g, score });
+  }));
+  products.sort((a, b) => b.score - a.score);
+  const top = products.slice(0, 8);
+  if (!top.length) return '😕 Не нашёл товаров по вашему запросу. Попробуйте другие слова, например: «стаканы», «пакеты», «перчатки», «тарелки». Или посмотрите разделы каталога слева.';
+  const priceNum = s => {
+    const n = parseFloat(s.replace(/\s/g, '').replace(',', '.'));
+    return isNaN(n) ? s : Math.round(n).toLocaleString('ru-RU') + ' ₽';
+  };
+  const maxScore = top[0].score;
+  const exact = top.filter(p => p.score >= maxScore * 0.8);
+  const show = exact.length <= 3 ? top : exact;
+  let html = 'Вот что нашлось:<br>';
+  if (top.length >= 8) html += '<em style="font-size:0.8rem;opacity:0.7;">Показаны лучшие совпадения</em><br>';
+  show.forEach((p, i) => {
+    html += '<div class="product-item">';
+    html += '<span class="product-name">' + p.n + '</span><br>';
+    html += '<span class="product-meta">' + p.g + ' · ' + p.u + '</span> ';
+    html += '<span class="product-price">' + priceNum(p.pr) + '</span>';
+    html += '</div>';
+  });
+  if (products.length > show.length) html += '<em style="font-size:0.8rem;opacity:0.7;">…и ещё ' + (products.length - show.length) + ' товаров</em>';
+  return html;
+}
 </script>
 </body>
 </html>
