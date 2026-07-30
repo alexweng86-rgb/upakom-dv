@@ -1014,23 +1014,26 @@ function answer(q) {
   if (top.length >= 8) html += '<em style="font-size:0.8rem;opacity:0.7;">Показаны лучшие совпадения</em><br>';
   show.forEach((p, i) => {
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const escPrice = p.pr.replace(/'/g, "\\'");
     html += '<div class="chat-product">';
     html += '<div class="chat-product-info"><div class="chat-product-name">' + p.n + '</div>';
     html += '<div class="chat-product-meta">' + p.g + ' · ' + p.u + ' · <strong>' + priceNum(p.pr) + '</strong></div></div>';
     html += '<div class="chat-product-actions">';
-    html += '<button class="chat-product-add" onclick="chatAddToCart(\'' + escName + '\')" title="В корзину">+</button>';
+    html += '<button class="chat-product-add" onclick="chatAddToCart(\'' + escName + '\',\'' + escPrice + '\')" title="В корзину">+</button>';
     html += '<button class="chat-product-view" onclick="goToProduct(\'' + escName + '\',\'' + p.g.replace(/'/g, "\\'") + '\')" title="В каталог">📂</button>';
     html += '</div></div>';
   });
   if (products.length > show.length) html += '<em style="font-size:0.8rem;opacity:0.7;">…и ещё ' + (products.length - show.length) + ' товаров</em>';
   return html;
 }
-function chatAddToCart(name) {
-  if (!cart[name]) cart[name] = { qty: 0, price: 0 };
+function chatAddToCart(name, price) {
+  const numPrice = parseFloat(String(price).replace(/\s/g, '').replace(',', '.'));
+  if (!cart[name]) cart[name] = { qty: 0, price: isNaN(numPrice) ? 0 : numPrice };
   cart[name].qty++;
   renderCart();
   syncAllCatalogQtys();
-  showToast('«' + name + '» добавлен в корзину');
+  const ps = numPrice ? ' (' + Math.round(numPrice).toLocaleString('ru-RU') + ' ₽)' : '';
+  showToast('«' + name + '» добавлен в корзину' + ps);
 }
 function goToProduct(name, group) {
   if (chatOpen) toggleChat();
