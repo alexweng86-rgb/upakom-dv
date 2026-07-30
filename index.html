@@ -1025,18 +1025,13 @@ function answer(q) {
     if (score > 0) products.push({ n: p.n, pr: p.pr, u: p.u, g: g.g, pq: p.pq, score });
   });});});
   products.sort((a, b) => b.score - a.score);
-  const top = products.slice(0, 8);
-  if (!top.length) return '😕 Не нашёл товаров по вашему запросу. Попробуйте другие слова, например: «стаканы», «пакеты», «перчатки», «тарелки». Или посмотрите разделы каталога слева.';
+  if (!products.length) return '😕 Не нашёл товаров по вашему запросу. Попробуйте другие слова, например: «стаканы», «пакеты», «перчатки», «тарелки». Или посмотрите разделы каталога слева.';
   const priceNum = s => {
     const n = parseFloat(s.replace(/\s/g, '').replace(',', '.'));
     return isNaN(n) ? s : fmtPrice(n) + ' ₽';
   };
-  const maxScore = top[0].score;
-  const exact = top.filter(p => p.score >= maxScore * 0.8);
-  const show = exact.length <= 3 ? top : exact;
-  let html = 'Вот что нашлось:<br>';
-  if (top.length >= 8) html += '<em style="font-size:0.8rem;opacity:0.7;">Показаны лучшие совпадения</em><br>';
-  show.forEach((p, i) => {
+  let html = 'Вот что нашлось (' + products.length + '):<br>';
+  products.forEach((p, i) => {
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, '&quot;');
     const escPrice = p.pr.replace(/'/g, "\\'");
     const escPq = (p.pq||'').replace(/'/g, "\\'");
@@ -1048,7 +1043,6 @@ function answer(q) {
     html += '<button class="chat-product-view" onclick="goToProduct(\'' + escName + '\',\'' + p.g.replace(/'/g, "\\'") + '\')" title="В каталог">📂</button>';
     html += '</div></div>';
   });
-  if (products.length > show.length) html += '<em style="font-size:0.8rem;opacity:0.7;">…и ещё ' + (products.length - show.length) + ' товаров</em>';
   return html;
 }
 function chatAddToCart(name, price, pq) {
