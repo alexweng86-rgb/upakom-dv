@@ -874,6 +874,7 @@ function renderSearchResults(query) {
     const priceDisplay = isNaN(priceNum) ? p.pr : fmtPrice(priceNum);
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, "&quot;");
     const escPrice = p.pr;
+    const escPq = (p.pq||'').replace(/'/g, "\\'");
     const icon = GROUP_ICONS[p.group] || '📦';
     const item = cart[p.n];
     const inCart = item && item.qty > 0;
