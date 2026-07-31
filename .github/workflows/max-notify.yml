@@ -1,0 +1,35 @@
+name: max-notify
+
+on:
+  repository_dispatch:
+    types: [max-notify]
+
+jobs:
+  send-to-max:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message to MAX
+        env:
+          MAX_TOKEN: ${{ secrets.MAX_BOT_TOKEN }}
+          MAX_USER_ID: ${{ secrets.MAX_USER_ID }}
+          TEXT: ${{ github.event.client_payload.text }}
+        run: |
+          python3 - "$TEXT" <<'EOF'
+          import json, os, ssl, sys, urllib.request
+          text = sys.argv[1]
+          data = json.dumps({"text": text}).encode("utf-8")
+          req = urllib.request.Request(
+              "https://platform-api2.max.ru/messages?user_id=" + os.environ["MAX_USER_ID"],
+              data=data,
+              headers={
+                  "Authorization": os.environ["MAX_TOKEN"],
+                  "Content-Type": "application/json",
+              },
+              method="POST",
+          )
+          ctx = ssl.create_default_context()
+          ctx.check_hostname = False
+          ctx.verify_mode = ssl.CERT_NONE
+          with urllib.request.urlopen(req, context=ctx, timeout=30) as r:
+              print(r.status, r.read(300).decode("utf-8", "ignore"))
+          EOF

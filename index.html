@@ -260,6 +260,7 @@
     .modal-close:hover{background:#e0e4ec}
     .modal h2{font-size:1.5rem;font-weight:800;margin-bottom:8px}
     .modal p{color:var(--gray-dark);margin-bottom:24px}
+    .modal-disclaimer{margin-top:16px;padding:12px 14px;background:var(--gray);border-radius:10px;font-size:0.75rem;color:var(--gray-dark);line-height:1.5}
     .toast{position:fixed;bottom:24px;right:24px;z-index:3000;background:var(--black);color:var(--white);padding:16px 24px;border-radius:12px;font-weight:600;font-size:0.9rem;box-shadow:0 8px 24px rgba(0,0,0,0.3);transform:translateY(100px);opacity:0;transition:var(--transition)}
     .toast.show{transform:translateY(0);opacity:1}
 
@@ -289,6 +290,7 @@
     .cart-item-remove:hover{color:red}
     .cart-footer{padding:20px 28px 28px;border-top:1px solid #eef0f6}
     .cart-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.15rem;margin-bottom:16px}
+    .cart-note{margin-bottom:16px;padding:10px 12px;background:var(--gray);border-radius:10px;font-size:0.72rem;color:var(--gray-dark);line-height:1.5}
     .cart-footer .btn-submit{font-size:0.95rem;padding:14px}
 
     .faq{padding:100px 0}
@@ -343,6 +345,9 @@
     .chat-product-add:hover{transform:scale(1.15);box-shadow:0 4px 16px rgba(0,68,255,0.35)}
     .chat-product-view{background:var(--gray);color:var(--black)}
     .chat-product-view:hover{background:#d0d4e0;transform:scale(1.1)}
+    .chat-hint{font-size:0.7rem;color:#8890a0;margin-top:8px;padding:6px 10px;background:rgba(0,0,0,0.03);border-radius:8px}
+    .chat-goto-catalog{display:block;width:100%;margin-top:8px;padding:8px 12px;border:none;border-radius:8px;background:var(--blue);color:var(--white);font-weight:600;cursor:pointer;transition:var(--transition)}
+    .chat-goto-catalog:hover{transform:scale(1.02);box-shadow:0 4px 16px rgba(0,68,255,0.35)}
     .chat-input-wrap{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--gray)}
     .chat-input-wrap input{flex:1;padding:10px 14px;border:2px solid var(--gray);border-radius:12px;font-family:var(--font);font-size:0.9rem;outline:none;transition:border 0.3s}
     .chat-input-wrap input:focus{border-color:var(--blue)}
@@ -614,6 +619,7 @@
       <div class="form-group"><input type="tel" name="phone" placeholder="Номер телефона" required></div>
       <button type="submit" class="btn-submit" id="modalSubmitBtn">Перезвоните мне</button>
     </form>
+    <div id="orderDisclaimer" class="modal-disclaimer" style="display:none">Цены на сайте приведены как справочная информация и не являются публичной офертой. Итоговая стоимость товара фиксируется в выставленном счете.</div>
   </div>
 </div>
 
@@ -649,6 +655,7 @@
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-total"><span>Итого:</span><span id="cartTotal">0 ₽</span></div>
+    <div class="cart-note">Цены на сайте приведены как справочная информация и не являются публичной офертой. Итоговая стоимость товара фиксируется в выставленном счете.</div>
     <button class="btn-submit" onclick="openModal('order');closeCart();">Оформить заказ</button>
   </div>
 </div>
@@ -695,16 +702,19 @@ function openModal(ctx){
   const desc=document.querySelector('.modal p');
   const btn=document.getElementById('modalSubmitBtn');
   const hidden=document.querySelector('input[name="context"]');
+  const disclaimer=document.getElementById('orderDisclaimer');
   if(ctx==='order'){
     title.textContent='Оформление заказа';
     desc.textContent='Укажите имя и телефон — мы свяжемся для подтверждения заказа.';
     btn.textContent='Подтвердить заказ';
     if(hidden)hidden.value='order';
+    if(disclaimer)disclaimer.style.display='block';
   }else{
     title.textContent='Заказать звонок';
     desc.textContent='Оставьте номер телефона — мы перезвоним в ближайшее время!';
     btn.textContent='Перезвоните мне';
     if(hidden)hidden.value='call';
+    if(disclaimer)disclaimer.style.display='none';
   }
   modalOverlay.classList.add('open');document.body.style.overflow='hidden'}
 function closeModal(){modalOverlay.classList.remove('open');document.body.style.overflow=''}
@@ -717,7 +727,7 @@ function handleModalForm(e){
   const phone=(f.querySelector('input[name=\"phone\"]')||{}).value||'';
   const cartItems=ctx==='order'?getCartSummary():'';
   const msg=ctx==='order'
-    ?'🛒 НОВЫЙ ЗАКАЗ\n\nИмя: '+name+'\nТелефон: '+phone+'\n\n'+cartItems
+    ?'🛒 НОВЫЙ ЗАКАЗ\n\nИмя: '+name+'\nТелефон: '+phone+'\n\n'+cartItems+'\n\nИтоговая стоимость фиксируется в выставленном счете.'
     :'📞 ЗАКАЗ ЗВОНКА\n\nИмя: '+name+'\nТелефон: '+phone;
   sendTelegram(msg);
   closeModal();
@@ -744,10 +754,7 @@ function getCartSummary(){
   return s;
 }
 function sendTelegram(msg){
-  const token='8856464905:AAEGV0wm79rbD0sTJCkdMunHYaILsR0jlOY';
-  const chatId='2032320805';
-  const body=JSON.stringify({token,chat_id:chatId,text:msg});
-  const opt={method:'POST',headers:{'Content-Type':'application/json'},body};
+  const opt={method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:msg})};
   fetch('https://telegram-proxy.alexweng86.workers.dev',opt).catch(()=>{});
 }
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){const h=this.getAttribute('href');if(h==='#')return;const t=document.querySelector(h);if(t){e.preventDefault();const o=header.offsetHeight;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-o,behavior:'smooth'})}})});
@@ -1025,32 +1032,25 @@ function answer(q) {
     summary += ' <button class="chat-call-btn" onclick="closeChat();openModal(\'call\')">📞 Заказать звонок</button>';
     return summary;
   }
-  const words = lq.replace(/[^а-яёa-z0-9\s]/gi, ' ').split(/\s+/).filter(Boolean);
-  const stopWords = /сколько|цена|стоит|почем|есть|найти|нужен|нужна|нужно|купить|ищу|покажи|дай|хочу|нужен|нужна|стоят|стоимость/i;
+  const searchTerm = lq.replace(/[^а-яёa-z0-9\s]/gi, ' ').split(/\s+/).filter(w => !/сколько|цена|стоит|стоят|почем|есть|найти|нужен|нужна|нужно|купить|ищу|покажи|дай|хочу|стоимость|заказать|оформить|товар|товара|товары/i.test(w)).join(' ').trim();
   const products = [];
-  CATALOG_DATA.forEach(g => {
-    g.subs.forEach(sub => {
-      sub.p.forEach(p => {
-    let score = 0;
-    const pn = p.n.toLowerCase();
-    const gn = g.g.toLowerCase();
-    words.forEach(w => {
-      if (w.length < 2) return;
-      if (pn.includes(w)) score += w.length * 1.5;
-      if (gn.includes(w)) score += w.length * 0.8;
-      if (pn.startsWith(w)) score += w.length * 0.5;
-      if (pn.indexOf(w) === 0) score += 2;
+  if (searchTerm) {
+    CATALOG_DATA.forEach(g => {
+      g.subs.forEach(sub => {
+        sub.p.forEach(p => {
+          if (p.n.toLowerCase().includes(searchTerm)) products.push({ n: p.n, pr: p.pr, u: p.u, g: g.g, pq: p.pq });
+        });
+      });
     });
-    if (score > 0) products.push({ n: p.n, pr: p.pr, u: p.u, g: g.g, pq: p.pq, score });
-  });});});
-  products.sort((a, b) => b.score - a.score);
+  }
   if (!products.length) return '😕 Не нашёл товаров по вашему запросу. Попробуйте другие слова, например: «стаканы», «пакеты», «перчатки», «тарелки». Или посмотрите разделы каталога слева.';
   const priceNum = s => {
     const n = parseFloat(s.replace(/\s/g, '').replace(',', '.'));
     return isNaN(n) ? s : fmtPrice(n) + ' ₽';
   };
+  const shown = products.slice(0, 30);
   let html = 'Вот что нашлось (' + products.length + '):<br>';
-  products.forEach((p, i) => {
+  shown.forEach((p, i) => {
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, '&quot;');
     const escPrice = p.pr.replace(/'/g, "\\'");
     const escPq = (p.pq||'').replace(/'/g, "\\'");
@@ -1062,6 +1062,9 @@ function answer(q) {
     html += '<button class="chat-product-view" onclick="goToProduct(\'' + escName + '\',\'' + p.g.replace(/'/g, "\\'") + '\')" title="В каталог">📂</button>';
     html += '</div></div>';
   });
+  if (products.length > 30) html += '<div class="chat-hint">Показаны первые 30 из ' + products.length + '.<br>';
+  html += '<button class="chat-goto-catalog" onclick="goToCatalogSearch(\'' + searchTerm.replace(/'/g, "\\'") + '\')">Открыть все в каталоге →</button>';
+  if (products.length > 30) html += '</div>';
   return html;
 }
 function chatAddToCart(name, price, pq) {
@@ -1072,6 +1075,16 @@ function chatAddToCart(name, price, pq) {
   syncAllCatalogQtys();
   const ps = cart[name].price ? ' (' + fmtPrice(cart[name].price) + ' ₽)' : '';
   showToast('«' + name + '» добавлен в корзину' + ps);
+}
+function goToCatalogSearch(term) {
+  if (chatOpen) toggleChat();
+  const cat = document.getElementById('catalog');
+  if (cat) {
+    const o = document.querySelector('header').offsetHeight;
+    window.scrollTo({ top: cat.getBoundingClientRect().top + window.scrollY - o, behavior: 'smooth' });
+  }
+  const input = document.getElementById('catalogSearch');
+  if (input) { input.value = term; renderCatalog(); }
 }
 function goToProduct(name, group) {
   if (chatOpen) toggleChat();
