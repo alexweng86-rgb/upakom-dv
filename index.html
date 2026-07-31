@@ -408,7 +408,7 @@
       <p class="hero-sub">Одноразовая посуда, упаковка и хозяйственные товары оптом для ресторанов, кафе, служб доставки и розничных магазинов. Более 2000 товаров в наличии.</p>
       <div class="hero-buttons">
         <a href="#catalog" class="btn-primary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> Перейти в каталог</a>
-        <a href="#" class="btn-secondary" onclick="openModal();return false;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg> Заказать прайс</a>
+        <a href="#" class="btn-secondary" onclick="openModal('price');return false;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg> Заказать прайс</a>
       </div>
     </div>
     <div class="hero-visual reveal-right"><div class="hero-shape"></div><div class="hero-shape-2"></div></div>
@@ -449,7 +449,7 @@
         <div id="catalogContent"></div>
       </div>
     </div>
-    <div class="catalog-more" style="margin-top:48px;"><a href="#" class="btn-primary" onclick="openModal();return false;">Заказать полный прайс-лист</a></div>
+    <div class="catalog-more" style="margin-top:48px;"><a href="#" class="btn-primary" onclick="openModal('price');return false;">Заказать полный прайс-лист</a></div>
   </div>
 </section>
 
@@ -482,7 +482,7 @@
     </div>
       <div class="delivery-grid stagger">
         <div class="delivery-card"><div class="delivery-icon">🚚</div><h3>Доставка</h3><p>Отправляем ваши заказы на следующий день в черте города, пригород 1-2 дня, уточняется у менеджера</p></div>
-        <div class="delivery-card"><div class="delivery-icon">🏪</div><h3>Самовывоз</h3><p>Забрать заказ можно со склада по адресу: г. Комсомольск-на-Амуре, ул. Гаражная, 2а. Пн–Пт 9:00–18:00, Сб 9:00–15:00 или в любом из магазинов</p></div>
+        <div class="delivery-card"><div class="delivery-icon">🏪</div><h3>Самовывоз</h3><p>Забрать заказ можно со склада по адресу: г. Комсомольск-на-Амуре, ул. Гаражная, 2а. Пн–Пт 9:00–18:00, Сб 9:00–15:00 или в любом из филиалов</p></div>
         <div class="delivery-card"><div class="delivery-icon">💳</div><h3>Способы оплаты</h3><p>Наличный и безналичный расчёт. Работаем с НДС и без НДС. Оплата картой, по счёту для юрлиц и ИП.</p></div>
       </div>
       <div class="catalog-more" style="margin-top:32px;">
@@ -541,7 +541,7 @@
         <div style="margin-top:24px;padding:20px 24px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border-radius:var(--radius);color:var(--white);">
           <strong style="font-size:1rem;">Торговый отдел для юридических лиц</strong>
           <p style="font-size:0.9rem;margin-top:8px;color:var(--black);">Работаем с ИП, ООО и организациями. Персональный торговый представитель, индивидуальные условия, отсрочка платежа.</p>
-          <a href="#" class="btn-call" style="margin-top:12px;display:inline-block;border-color:rgba(255,255,255,0.5);" onclick="openModal('call');return false;">Связаться с отделом</a>
+          <a href="#" class="btn-call" style="margin-top:12px;display:inline-block;border-color:rgba(255,255,255,0.5);" onclick="openModal('trade');return false;">Связаться с отделом</a>
         </div>
       </div>
       <div class="contact-form reveal-right">
@@ -617,6 +617,7 @@
       <input type="hidden" name="context" value="call">
       <div class="form-group"><input type="text" name="name" placeholder="Ваше имя" required></div>
       <div class="form-group"><input type="tel" name="phone" placeholder="Номер телефона" required></div>
+      <div class="form-group" id="modalEmailWrap" style="display:none"><input type="email" name="email" placeholder="Email для прайс-листа"></div>
       <button type="submit" class="btn-submit" id="modalSubmitBtn">Перезвоните мне</button>
     </form>
     <div id="orderDisclaimer" class="modal-disclaimer" style="display:none">Цены на сайте приведены как справочная информация и не являются публичной офертой. Итоговая стоимость товара фиксируется в выставленном счете.</div>
@@ -703,18 +704,35 @@ function openModal(ctx){
   const btn=document.getElementById('modalSubmitBtn');
   const hidden=document.querySelector('input[name="context"]');
   const disclaimer=document.getElementById('orderDisclaimer');
+  const emailWrap=document.getElementById('modalEmailWrap');
   if(ctx==='order'){
     title.textContent='Оформление заказа';
     desc.textContent='Укажите имя и телефон — мы свяжемся для подтверждения заказа.';
     btn.textContent='Подтвердить заказ';
     if(hidden)hidden.value='order';
     if(disclaimer)disclaimer.style.display='block';
+    if(emailWrap)emailWrap.style.display='none';
+  }else if(ctx==='trade'){
+    title.textContent='Связаться с торговым отделом';
+    desc.textContent='Оставьте контакты — торговый представитель свяжется с вами.';
+    btn.textContent='Отправить заявку';
+    if(hidden)hidden.value='trade';
+    if(disclaimer)disclaimer.style.display='none';
+    if(emailWrap)emailWrap.style.display='none';
+  }else if(ctx==='price'){
+    title.textContent='Заказать прайс-лист';
+    desc.textContent='Оставьте контакты — вышлем полный прайс-лист.';
+    btn.textContent='Получить прайс-лист';
+    if(hidden)hidden.value='price';
+    if(disclaimer)disclaimer.style.display='none';
+    if(emailWrap)emailWrap.style.display='block';
   }else{
     title.textContent='Заказать звонок';
     desc.textContent='Оставьте номер телефона — мы перезвоним в ближайшее время!';
     btn.textContent='Перезвоните мне';
     if(hidden)hidden.value='call';
     if(disclaimer)disclaimer.style.display='none';
+    if(emailWrap)emailWrap.style.display='none';
   }
   modalOverlay.classList.add('open');document.body.style.overflow='hidden'}
 function closeModal(){modalOverlay.classList.remove('open');document.body.style.overflow=''}
@@ -725,13 +743,18 @@ function handleModalForm(e){
   const ctx=(f.querySelector('input[name=\"context\"]')||{}).value||'call';
   const name=(f.querySelector('input[name=\"name\"]')||{}).value||'';
   const phone=(f.querySelector('input[name=\"phone\"]')||{}).value||'';
+  const email=(f.querySelector('input[name=\"email\"]')||{}).value||'';
   const cartItems=ctx==='order'?getCartSummary():'';
   const msg=ctx==='order'
     ?'🛒 НОВЫЙ ЗАКАЗ\n\nИмя: '+name+'\nТелефон: '+phone+'\n\n'+cartItems+'\n\nИтоговая стоимость фиксируется в выставленном счете.'
-    :'📞 ЗАКАЗ ЗВОНКА\n\nИмя: '+name+'\nТелефон: '+phone;
+    :(ctx==='trade'
+      ?'🏢 ЗАЯВКА В ТОРГОВЫЙ ОТДЕЛ\n\nИмя: '+name+'\nТелефон: '+phone
+      :(ctx==='price'
+        ?'📄 ЗАЯВКА НА ПРАЙС-ЛИСТ\n\nИмя: '+name+'\nТелефон: '+phone+(email?'\nEmail: '+email:'')
+        :'📞 ЗАКАЗ ЗВОНКА\n\nИмя: '+name+'\nТелефон: '+phone));
   sendTelegram(msg);
   closeModal();
-  showToast(ctx==='order'?'Заказ отправлен! Мы свяжемся с вами.':'Спасибо! Мы перезвоним вам.');
+  showToast(ctx==='order'?'Заказ отправлен! Мы свяжемся с вами.':(ctx==='trade'?'Заявка отправлена! Торговый представитель свяжется с вами.':(ctx==='price'?'Заявка отправлена! Прайс-лист придет вам на почту.':'Спасибо! Мы перезвоним вам.')));
   f.reset();
 }
 function handleForm(e){

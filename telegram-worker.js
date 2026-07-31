@@ -1,6 +1,9 @@
 export default {
   async fetch(request, env) {
-    const CORS = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
+    const CORS = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' };
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: CORS });
+    }
     if (request.method !== 'POST') {
       return new Response('Send POST', { status: 405, headers: CORS });
     }
@@ -22,11 +25,13 @@ export default {
           'Authorization': 'Bearer ' + token,
           'Accept': 'application/vnd.github+json',
           'Content-Type': 'application/json',
-          'X-GitHub-Api-Version': '2022-11-28'
+          'X-GitHub-Api-Version': '2022-11-28',
+          'User-Agent': 'upakom-site'
         },
         body: JSON.stringify({ event_type: 'max-notify', client_payload: { text: body.text } })
       });
-      return new Response(JSON.stringify({ status: resp.status }), { status: resp.status, headers: CORS });
+      const ghBody = await resp.text();
+      return new Response(JSON.stringify({ status: resp.status, gh: ghBody }), { status: 200, headers: CORS });
     }
 
     const { token, chat_id, text } = body;
