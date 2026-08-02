@@ -262,8 +262,15 @@
     .modal p{color:var(--gray-dark);margin-bottom:24px}
     .modal-disclaimer{margin-top:16px;padding:12px 14px;background:var(--gray);border-radius:10px;font-size:0.75rem;color:var(--gray-dark);line-height:1.5}
     .toast{position:fixed;bottom:24px;right:24px;z-index:3000;background:var(--black);color:var(--white);padding:16px 24px;border-radius:12px;font-weight:600;font-size:0.9rem;box-shadow:0 8px 24px rgba(0,0,0,0.3);transform:translateY(100px);opacity:0;transition:var(--transition)}
-    .toast.show{transform:translateY(0);opacity:1}
 
+    .toast.show{transform:translateY(0);opacity:1}
+    .cart-float{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:2600;background:var(--blue);color:var(--white);border:none;border-radius:50px;box-shadow:0 8px 24px rgba(0,68,255,0.4);padding:14px 24px;display:none;align-items:center;gap:12px;cursor:pointer;font-size:0.95rem;font-weight:700;transition:var(--transition);max-width:calc(100% - 32px)}
+    .cart-float.show{display:flex}
+    .cart-float:hover{transform:translateX(-50%) scale(1.03)}
+    .cart-float-icon{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .cart-float-total{margin-left:auto;background:rgba(255,255,255,0.2);border-radius:50px;padding:4px 12px;font-size:0.85rem;white-space:nowrap}
+    .cart-continue{margin-top:12px;width:100%;padding:14px;border-radius:12px;border:2px solid #d0d4e0;background:var(--white);color:var(--black);font-weight:700;font-size:0.95rem;cursor:pointer;transition:var(--transition)}
+    .cart-continue:hover{border-color:var(--blue);color:var(--blue)}
     .cart-modal{position:fixed;top:0;right:0;bottom:0;width:440px;max-width:100%;background:var(--white);z-index:2500;box-shadow:-8px 0 40px rgba(0,0,0,0.15);transform:translateX(100%);transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);display:flex;flex-direction:column}
     .cart-modal.open{transform:translateX(0)}
     .cart-backdrop{position:fixed;inset:0;z-index:2499;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);display:none}
@@ -641,6 +648,7 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<button class="cart-float" id="cartFloat" onclick="openCart()"><span class="cart-float-icon">🛒</span><span id="cartFloatLabel">В корзину</span><span class="cart-float-total" id="cartFloatTotal">0 ₽</span></button>
 
 <div class="cart-backdrop" id="cartBackdrop"></div>
 <div class="cart-modal" id="cartModal">
@@ -658,6 +666,7 @@
     <div class="cart-total"><span>Итого:</span><span id="cartTotal">0 ₽</span></div>
     <div class="cart-note">Цены на сайте приведены как справочная информация и не являются публичной офертой. Итоговая стоимость товара фиксируется в выставленном счете.</div>
     <button class="btn-submit" onclick="openModal('order');closeCart();">Оформить заказ</button>
+    <button class="cart-continue" onclick="continueShopping()">← Продолжить покупки</button>
   </div>
 </div>
 
@@ -684,6 +693,9 @@ function changeQty(name,delta){const item=cart[name];if(!item)return;const n=ite
 function setCartQty(name){const input=event.target;const val=parseInt(input.value);if(isNaN(val)||val<1){input.value=cart[name]?cart[name].qty:1;return}const item=cart[name];if(!item)return;if(val===0){delete cart[name];syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart()}else item.qty=val;renderCart();syncCatalogQtyCard(name)}
 function renderCart(){const total=Object.values(cart).reduce((s,item)=>s+item.qty,0);cartCountEl.textContent=total;const list=document.getElementById('cartList');const empty=document.getElementById('cartEmpty');const footer=document.getElementById('cartFooter');const totalEl=document.getElementById('cartTotal');
   const items=Object.entries(cart);empty.style.display=items.length?'none':'block';footer.style.display=items.length?'block':'none';
+  const cartFloat=document.getElementById('cartFloat');const cartFloatTotal=document.getElementById('cartFloatTotal');
+  if(cartFloat)cartFloat.classList.toggle('show',items.length>0);
+  if(cartFloatTotal)cartFloatTotal.textContent=fmtPrice(items.reduce((s,[n,i])=>s+i.qty*(i.price||0),0))+' ₽';
   document.querySelectorAll('.cart-item').forEach(el=>el.remove());
   let sum=0;items.forEach(([name,item])=>{const price=item.price||0;sum+=item.qty*price;const div=document.createElement('div');div.className='cart-item';
     const escName=name.replace(/'/g,"\\'");
@@ -694,6 +706,7 @@ function renderCart(){const total=Object.values(cart).reduce((s,item)=>s+item.qt
 document.getElementById('cartBtn').addEventListener('click',()=>{if(Object.keys(cart).length===0)showToast('Корзина пуста');else openCart()});
 function openCart(){document.getElementById('cartModal').classList.add('open');document.getElementById('cartBackdrop').classList.add('open');document.body.style.overflow='hidden'}
 function closeCart(){document.getElementById('cartModal').classList.remove('open');document.getElementById('cartBackdrop').classList.remove('open');document.body.style.overflow=''}
+function continueShopping(){closeCart();const cat=document.getElementById('catalog');const o=document.querySelector('header').offsetHeight;if(cat)window.scrollTo({top:cat.getBoundingClientRect().top+window.scrollY-o,behavior:'smooth'});const input=document.getElementById('catalogSearch');if(input)setTimeout(()=>input.focus(),500)}
 document.getElementById('cartBackdrop').addEventListener('click',closeCart);
 let toastTimeout;
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>t.classList.remove('show'),3000)}
