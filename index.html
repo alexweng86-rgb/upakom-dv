@@ -757,6 +757,7 @@ function animateCounter(el,t){const d=2000,s=60,i=t/s;let c=0;const timer=setInt
 let cart={};const cartCountEl=document.getElementById('cartCount');
 function fmtPrice(n){const p=Number(n).toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,' ');return p.join(',')}
 function fmtPack(pq){if(!pq)return '';var parts=pq.split('/');if(parts.length<3)return '';var p=parseInt(parts[1]),c=parseInt(parts[2]);var a=[];if(p>0)a.push(p+' шт/уп');if(c>0)a.push(c+' шт/ящ');return a.join(' · ')}
+function escJsAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
 function addToCart(name,price,pq){if(!cart[name])cart[name]={qty:0,price:price||0,pq:pq||''};cart[name].qty++;renderCart();event.target.classList.add('added');setTimeout(()=>event.target.classList.remove('added'),400);const ps=price?` (${fmtPrice(price)} ₽)`:'';showToast('«'+name+'» добавлен в корзину'+ps)}
 function removeFromCart(name){delete cart[name];renderCart();syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart();}
 function changeQty(name,delta){const item=cart[name];if(!item)return;const n=item.qty+delta;if(n<=0){delete cart[name];syncCatalogQtyCard(name);if(Object.keys(cart).length===0)closeCart()}else item.qty=n;renderCart();syncCatalogQtyCard(name)}
@@ -768,7 +769,7 @@ function renderCart(){const total=Object.values(cart).reduce((s,item)=>s+item.qt
   if(cartFloatTotal)cartFloatTotal.textContent=fmtPrice(items.reduce((s,[n,i])=>s+i.qty*(i.price||0),0))+' ₽';
   document.querySelectorAll('.cart-item').forEach(el=>el.remove());
   let sum=0;items.forEach(([name,item])=>{const price=item.price||0;sum+=item.qty*price;const div=document.createElement('div');div.className='cart-item';
-    const escName=name.replace(/'/g,"\\'");
+    const escName=escJsAttr(name);
     const packLabel = item.pq ? fmtPack(item.pq) : '';
     div.innerHTML='<div style="width:40px;height:40px;border-radius:10px;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📦</div><div style="flex:1;min-width:0;"><div class="cart-item-name">'+name+'</div>'+(packLabel?'<div class="cart-item-pack">'+packLabel+'</div>':'')+'</div><div class="cart-item-qty"><button onclick="changeQty(\''+escName+'\',-1)">−</button><input type="number" min="1" value="'+item.qty+'" onchange="setCartQty(\''+escName+'\')"><button onclick="changeQty(\''+escName+'\',1)">+</button></div><span class="cart-item-subtotal">'+fmtPrice(item.qty*price)+' ₽</span><button class="cart-item-remove" onclick="removeFromCart(\''+escName+'\')">✕</button>';
     list.insertBefore(div,empty)});
@@ -960,9 +961,9 @@ function renderProductCards(gName) {
   allProducts.forEach(p => {
     const priceNum = parseFloat(p.pr.replace(/\s/g, '').replace(',', '.'));
     const priceDisplay = isNaN(priceNum) ? p.pr : fmtPrice(priceNum);
-    const escName = p.n.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-    const escPrice = p.pr;
-    const escPq = (p.pq||'').replace(/'/g, "\\'");
+    const escName = escJsAttr(p.n);
+    const escPrice = escJsAttr(p.pr);
+    const escPq = escJsAttr(p.pq);
     const item = cart[p.n];
     const inCart = item && item.qty > 0;
     const card = document.createElement('div');
@@ -1004,9 +1005,9 @@ function renderSearchResults(query) {
     const p = Object.assign({}, res.p, { group: res.group });
     const priceNum = parseFloat(p.pr.replace(/\s/g, '').replace(',', '.'));
     const priceDisplay = isNaN(priceNum) ? p.pr : fmtPrice(priceNum);
-    const escName = p.n.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-    const escPrice = p.pr;
-    const escPq = (p.pq||'').replace(/'/g, "\\'");
+    const escName = escJsAttr(p.n);
+    const escPrice = escJsAttr(p.pr);
+    const escPq = escJsAttr(p.pq);
     const icon = GROUP_ICONS[p.group] || '📦';
     const item = cart[p.n];
     const inCart = item && item.qty > 0;
@@ -1250,19 +1251,19 @@ function answer(q) {
   const shown = products.slice(0, 10);
   let html = 'Вот что нашлось (' + products.length + '):<br>';
   shown.forEach((p, i) => {
-    const escName = p.n.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    const escPrice = p.pr.replace(/'/g, "\\'");
-    const escPq = (p.pq||'').replace(/'/g, "\\'");
+    const escName = escJsAttr(p.n);
+    const escPrice = escJsAttr(p.pr);
+    const escPq = escJsAttr(p.pq);
     html += '<div class="chat-product">';
     html += '<div class="chat-product-info"><div class="chat-product-name">' + p.n + '</div>';
     html += '<div class="chat-product-meta">' + p.g + ' · ' + p.u + ' · <strong>' + priceNum(p.pr) + '</strong>' + (fmtPack(p.pq)?'<br><span class="chat-product-pack">'+fmtPack(p.pq)+'</span>':'') + '</div></div>';
     html += '<div class="chat-product-actions">';
     html += '<button class="chat-product-add" onclick="chatAddToCart(\'' + escName + '\',\'' + escPrice + '\',\'' + escPq + '\')" title="В корзину">+</button>';
-    html += '<button class="chat-product-view" onclick="goToProduct(\'' + escName + '\',\'' + p.g.replace(/'/g, "\\'") + '\')" title="В каталог">📂</button>';
+    html += '<button class="chat-product-view" onclick="goToProduct(\'' + escName + '\',\'' + escJsAttr(p.g) + '\')" title="В каталог">📂</button>';
     html += '</div></div>';
   });
   if (products.length > 10) html += '<div class="chat-hint">Показаны первые 10 из ' + products.length + '.<br>';
-  html += '<button class="chat-goto-catalog" onclick="goToCatalogSearch(\'' + lq.replace(/'/g, "\\'") + '\')">Открыть все в каталоге →</button>';
+  html += '<button class="chat-goto-catalog" onclick="goToCatalogSearch(\'' + escJsAttr(lq) + '\')">Открыть все в каталоге →</button>';
   if (products.length > 10) html += '</div>';
   return html;
 }
