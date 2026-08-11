@@ -769,7 +769,7 @@ function renderCart(){const total=Object.values(cart).reduce((s,item)=>s+item.qt
 document.getElementById('cartBtn').addEventListener('click',()=>{if(Object.keys(cart).length===0)showToast('Корзина пуста');else openCart()});
 function openCart(){document.getElementById('cartModal').classList.add('open');document.getElementById('cartBackdrop').classList.add('open');document.body.classList.add('cart-open');document.body.style.overflow='hidden'}
 function closeCart(){document.getElementById('cartModal').classList.remove('open');document.getElementById('cartBackdrop').classList.remove('open');document.body.classList.remove('cart-open');document.body.style.overflow=''}
-function continueShopping(){closeCart();const cat=document.getElementById('catalog');const o=document.querySelector('header').offsetHeight;if(cat)window.scrollTo({top:cat.getBoundingClientRect().top+window.scrollY-o,behavior:'smooth'});const input=document.getElementById('catalogSearch');if(input)setTimeout(()=>input.focus(),500)}
+function continueShopping(){closeCart()}
 document.getElementById('cartBackdrop').addEventListener('click',closeCart);
 let toastTimeout;
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>t.classList.remove('show'),3000)}
