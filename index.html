@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Упаком ДВ — Одноразовая посуда и упаковка оптом</title>
+  <title>ДВ Упаком — Одноразовая посуда и упаковка оптом</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <meta name="description" content="Упаком ДВ — поставки одноразовой посуды и упаковочных материалов для бизнеса. Широкий ассортимент, выгодные цены, доставка по РФ.">
+  <meta name="description" content="ДВ Упаком — поставки одноразовой посуды и упаковочных материалов для бизнеса. Широкий ассортимент, выгодные цены, доставка по РФ.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
     a{text-decoration:none;color:inherit}
     ul{list-style:none}
     .container{max-width:1200px;margin:0 auto;padding:0 24px}
-    .gradient-bg{position:relative;background:linear-gradient(135deg,var(--black) 0%,#001133 30%,var(--blue) 60%,#6699ff 85%,var(--white) 100%);background-size:400% 400%;animation:gradientShift 15s ease infinite}
+    .gradient-bg{position:relative;background:linear-gradient(135deg,#0a0a1a 0%,#0b1e5c 28%,#0033ff 58%,#3d6bff 82%,#7aa2ff 100%)}
     @keyframes gradientShift{0%{background-position:0% 50%}25%{background-position:50% 0%}50%{background-position:100% 50%}75%{background-position:50% 100%}100%{background-position:0% 50%}}
     .section-gradient{position:relative;background:linear-gradient(135deg,var(--white) 0%,#e8eeff 40%,#d0ddff 70%,var(--white) 100%);background-size:400% 400%;animation:gradientShiftSoft 20s ease infinite}
     @keyframes gradientShiftSoft{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
@@ -41,9 +41,11 @@
     .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.08);transition:var(--transition)}
     .header.scrolled{background:rgba(10,10,26,0.98);box-shadow:0 4px 30px rgba(0,0,0,0.3)}
     .header-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
-    .logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.5rem;color:var(--white);letter-spacing:-0.5px}
+    .logo{display:flex;flex-direction:column;align-items:flex-start;gap:2px;font-weight:800;font-size:1.5rem;color:var(--white);letter-spacing:-0.5px}
+    .logo-title{display:block;line-height:1.1}
+    .logo-accent{color:var(--blue-light);}
     .logo-icon{width:44px;height:44px;background:var(--blue);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--white);flex-shrink:0}
-    .logo-sub{font-weight:400;font-size:0.7rem;color:var(--gray-dark);letter-spacing:0.5px;display:block;margin-top:-2px}
+    .logo-sub{font-weight:400;font-size:0.7rem;color:var(--gray-dark);letter-spacing:0.5px;display:block;line-height:1.2}
     .nav{display:flex;align-items:center;gap:32px}
     .nav a{color:rgba(255,255,255,0.75);font-size:0.9rem;font-weight:500;transition:var(--transition);position:relative}
     .nav a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--blue);transition:var(--transition)}
@@ -73,9 +75,9 @@
     .particle:nth-child(7){top:15%;left:70%;animation-duration:23s;animation-delay:1.5s}
     .particle:nth-child(8){top:50%;left:15%;animation-duration:17s;animation-delay:3.5s;width:5px;height:5px}
     @keyframes floatParticle{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:0.3}25%{transform:translateY(-40px) rotate(90deg) scale(1.2);opacity:0.6}50%{transform:translateY(-80px) rotate(180deg) scale(1);opacity:0.3}75%{transform:translateY(-40px) rotate(270deg) scale(0.8);opacity:0.5}100%{transform:translateY(0) rotate(360deg) scale(1);opacity:0.3}}
-    .hero-content{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+    .hero-content{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:60px;align-items:center}
     .hero h1{font-size:clamp(2.5rem,5vw,4.2rem);font-weight:900;line-height:1.1;color:var(--white);letter-spacing:-1px;margin-bottom:24px}
-    .hero h1 span{background:linear-gradient(135deg,var(--blue-light),var(--blue),var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero h1 .hero-slogan{display:block;font-size:0.42em;font-weight:400;color:rgba(255,255,255,0.55);letter-spacing:0.5px;margin-top:10px;text-transform:none}
     .hero-sub{font-size:1.15rem;color:rgba(255,255,255,0.7);max-width:520px;margin-bottom:40px;line-height:1.7}
     .hero-buttons{display:flex;gap:16px;flex-wrap:wrap}
     .btn-primary{display:inline-flex;align-items:center;gap:10px;padding:18px 40px;border-radius:50px;font-weight:700;font-size:1rem;border:none;cursor:pointer;transition:var(--transition);font-family:var(--font);background:var(--blue);color:var(--white);position:relative;overflow:hidden}
@@ -84,13 +86,28 @@
     .btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 40px rgba(0,68,255,0.4)}
     .btn-secondary{display:inline-flex;align-items:center;gap:10px;padding:18px 40px;border-radius:50px;font-weight:700;font-size:1rem;border:2px solid rgba(255,255,255,0.3);cursor:pointer;transition:var(--transition);font-family:var(--font);background:transparent;color:var(--white)}
     .btn-secondary:hover{border-color:var(--white);background:rgba(255,255,255,0.08);transform:translateY(-3px)}
-    .hero-visual{display:flex;justify-content:center;align-items:center;position:relative}
-    .hero-shape{width:420px;height:420px;border-radius:50%;background:radial-gradient(circle at 30% 30%,var(--blue),transparent 70%);filter:blur(40px);opacity:0.4;animation:pulseShape 6s ease-in-out infinite}
-    .hero-shape-2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle at 70% 70%,rgba(255,255,255,0.1),transparent 60%);filter:blur(30px);animation:pulseShape 8s ease-in-out infinite reverse}
+    .hero-visual{display:flex;justify-content:center;align-items:center;position:relative;height:500px;min-width:420px}
+    .hero-glow{position:absolute;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(0,68,255,0.55),rgba(122,162,255,0.15) 45%,transparent 70%);filter:blur(30px);animation:pulseShape 7s ease-in-out infinite}
+    .hero-emoji{position:absolute;width:86px;height:86px;display:flex;align-items:center;justify-content:center;font-size:2.7rem;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);border-radius:24px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 12px 40px rgba(0,0,0,0.25);animation:floatEmoji 5s ease-in-out infinite}
+    .hero-emoji.e1{top:4%;left:10%;animation-delay:0s}
+    .hero-emoji.e2{top:26%;right:4%;animation-delay:0.7s}
+    .hero-emoji.e3{bottom:22%;left:4%;animation-delay:1.3s}
+    .hero-emoji.e4{bottom:6%;right:16%;animation-delay:0.4s}
+    .hero-emoji.e5{top:54%;left:-5%;animation-delay:1.8s}
+    .hero-emoji.e6{top:0%;right:34%;animation-delay:2.2s;width:64px;height:64px;font-size:2rem}
+    @keyframes floatEmoji{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-16px) rotate(4deg)}}
+    .hero-badge-main{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:250px;height:250px;border-radius:50%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.25);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 24px 80px rgba(0,68,255,0.35);animation:floatEmoji 6s ease-in-out infinite;text-align:center;padding:26px}
+    .hero-badge-emoji{font-size:3.4rem;line-height:1}
+    .hero-badge-title{font-size:1.5rem;font-weight:800;color:var(--white);margin-top:10px}
+    .hero-badge-sub{font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:4px}
     @keyframes pulseShape{0%,100%{transform:scale(1);opacity:0.4}50%{transform:scale(1.15);opacity:0.6}}
     .advantages{padding:100px 0;position:relative}
-    .section-label{display:inline-block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--blue);margin-bottom:12px}
-    .section-title{font-size:clamp(2rem,3.5vw,3rem);font-weight:800;line-height:1.2;margin-bottom:16px;color:var(--black)}
+    .section-label{display:inline-block;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--blue);margin-bottom:12px;position:relative;padding-left:24px}
+    .section-label::before{content:'✨';position:absolute;left:0;top:50%;transform:translateY(-50%);font-size:0.85rem;animation:labelPulse 2.5s ease-in-out infinite}
+    @keyframes labelPulse{0%,100%{transform:translateY(-50%) scale(1)}50%{transform:translateY(-50%) scale(1.25)}}
+    .section-title{font-size:clamp(2rem,3.5vw,3rem);font-weight:800;line-height:1.2;margin-bottom:20px;color:var(--black);position:relative;display:inline-block}
+    .section-title::after{content:'';position:absolute;left:0;bottom:-12px;width:64px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--blue),#7aa2ff,var(--blue-dark));background-size:200% 100%;animation:shimmerBar 3s ease-in-out infinite}
+    @keyframes shimmerBar{0%{background-position:0% 0}100%{background-position:200% 0}}
     .section-sub{font-size:1.1rem;color:var(--gray-dark);max-width:600px;margin-bottom:48px}
     .advantages-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
     .advantage-card{background:var(--white);border-radius:var(--radius);padding:36px 28px;box-shadow:var(--shadow);transition:var(--transition);border:1px solid rgba(0,0,0,0.04);position:relative;overflow:hidden}
@@ -100,6 +117,10 @@
     .adv-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:20px}
     .advantage-card h3{font-size:1.2rem;font-weight:700;margin-bottom:10px}
     .advantage-card p{color:var(--gray-dark);font-size:0.95rem;line-height:1.6}
+    .adv-deco{position:absolute;right:-6px;bottom:-10px;font-size:5.5rem;line-height:1;opacity:0.08;pointer-events:none;animation:advFloat 7s ease-in-out infinite}
+    .advantage-card:nth-child(even) .adv-deco{animation-delay:1.5s;animation-direction:reverse}
+    @keyframes advFloat{0%,100%{transform:rotate(-10deg) translateY(0)}50%{transform:rotate(-5deg) translateY(-12px)}}
+    .advantage-card:hover .adv-deco{opacity:0.18}
     .catalog{padding:100px 0}
     .catalog-more{text-align:center;margin-top:48px}
     @keyframes cartBump{0%{transform:scale(1)}30%{transform:scale(1.3)}60%{transform:scale(0.9)}100%{transform:scale(1)}}
@@ -154,9 +175,12 @@
     .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
     .about-text p{color:var(--gray-dark);font-size:1.05rem;line-height:1.7;margin-bottom:16px}
     .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-    .stat-item{text-align:center;padding:28px 16px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);transition:var(--transition)}
+    .stat-item{text-align:center;padding:28px 16px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);transition:var(--transition);position:relative;overflow:hidden}
     .stat-item:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,68,255,0.12)}
-    .stat-number{font-size:2.5rem;font-weight:900;color:var(--blue);line-height:1.1}
+    .stat-emoji{font-size:2rem;line-height:1;display:inline-block;animation:floatEmoji 4s ease-in-out infinite}
+    .stat-item:nth-child(2) .stat-emoji{animation-delay:0.8s}
+    .stat-item:nth-child(3) .stat-emoji{animation-delay:1.6s}
+    .stat-number{font-size:2.5rem;font-weight:900;line-height:1.1;background:linear-gradient(135deg,var(--blue),#3d6bff,#0044ff);-webkit-background-clip:text;background-clip:text;color:transparent}
     .stat-label{font-size:0.9rem;color:var(--gray-dark);margin-top:6px}
     .blog{padding:100px 0}
     .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:28px}
@@ -208,12 +232,12 @@
     .footer-links a:hover{color:var(--blue);padding-left:4px}
     .footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:0.85rem}
     @media(max-width:1024px){
-      .hero-content{grid-template-columns:1fr;text-align:center}
+      .hero-content{grid-template-columns:minmax(0,1fr);text-align:center}
       .hero-sub{margin-left:auto;margin-right:auto}
       .hero-buttons{justify-content:center}
-      .hero-visual{display:none}
-      .about-grid{grid-template-columns:1fr}
-      .contacts-grid{grid-template-columns:1fr}
+      .hero-visual{justify-content:center;margin-top:44px;min-width:0}
+      .about-grid{grid-template-columns:minmax(0,1fr)}
+      .contacts-grid{grid-template-columns:minmax(0,1fr)}
       .footer-grid{grid-template-columns:1fr 1fr}
       .stats-grid{grid-template-columns:repeat(3,1fr)}
     }
@@ -230,18 +254,28 @@
       .nav-mobile .btn-call-mobile{margin-top:8px;padding:14px 24px;border:2px solid var(--blue);border-radius:50px;color:var(--white);font-weight:600;font-size:1rem;background:transparent;text-align:center}
       .hero{min-height:90vh;padding:100px 0 60px}
       .hero h1{font-size:2rem}
+      .hero-visual{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;height:auto;min-width:0;gap:12px;margin-top:36px}
+      .hero-glow{display:none}
+      .hero-badge-main{position:relative;order:-1;width:160px;height:160px}
+      .hero-badge-emoji{font-size:2.2rem}
+      .hero-badge-title{font-size:1.05rem}
+      .hero-badge-sub{font-size:0.72rem}
+      .hero-emoji{position:static;width:54px;height:54px;font-size:1.6rem;border-radius:14px}
+      .hero-emoji.e4,.hero-emoji.e5,.hero-emoji.e6{display:none}
+      .advantages,.catalog,.about,.delivery,.faq,.contacts,.blog{padding:64px 0}
+      .section-title{margin-bottom:18px}
       .hero-sub{font-size:1rem}
       .btn-primary,.btn-secondary{padding:14px 28px;font-size:0.9rem}
-      .advantages-grid{grid-template-columns:1fr}
+      .advantages-grid{grid-template-columns:minmax(0,1fr)}
       .catalog-layout{flex-direction:column}
       .catalog-sidebar{display:none;position:static;width:100%;max-height:60vh;top:0}
       .catalog-sidebar.open{display:block}
       .catalog-mobile-sidebar-toggle{display:block}
       .product-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-      .blog-grid{grid-template-columns:1fr}
-      .stats-grid{grid-template-columns:1fr;gap:16px}
-      .delivery-grid{grid-template-columns:1fr}
-      .footer-grid{grid-template-columns:1fr;gap:32px}
+      .blog-grid{grid-template-columns:minmax(0,1fr)}
+      .stats-grid{grid-template-columns:minmax(0,1fr);gap:16px}
+      .delivery-grid{grid-template-columns:minmax(0,1fr)}
+      .footer-grid{grid-template-columns:minmax(0,1fr);gap:32px}
       .contact-form{padding:24px}
       .footer-bottom{flex-direction:column;text-align:center}
     }
@@ -251,6 +285,13 @@
       .section-title{font-size:1.4rem}
       .hero-buttons{flex-direction:column;align-items:stretch}
       .hero-buttons .btn-primary,.hero-buttons .btn-secondary{justify-content:center}
+      .modal{padding:24px}
+      .modal-overlay{padding:16px}
+      .chat-panel{left:12px;right:12px;bottom:90px;width:auto;height:70vh}
+      .chat-toggle{bottom:16px;right:16px;width:54px;height:54px;font-size:24px}
+      .cart-float{bottom:14px}
+      .chat-messages{padding:12px}
+      .product-card-name{font-size:0.85rem}
     }
     .modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:24px}
     .modal-overlay.open{display:flex}
@@ -370,6 +411,8 @@
     .chat-order-btn:hover{box-shadow:0 4px 16px rgba(0,68,255,0.35);transform:scale(1.03)}
     .chat-call-btn{background:var(--gray);color:var(--black)}
     .chat-call-btn:hover{background:#d0d4e0;transform:scale(1.03)}
+    .chat-operator-btn{display:block;width:100%;margin-top:8px;padding:10px 16px;border-radius:12px;border:2px solid var(--blue);background:transparent;color:var(--blue);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:var(--font)}
+    .chat-operator-btn:hover{background:var(--blue);color:var(--white);transform:scale(1.02)}
     @media(max-width:480px){
       .chat-panel{right:12px;left:12px;width:auto;bottom:90px;height:calc(100vh - 180px)}
       .chat-toggle{right:16px;bottom:16px;width:52px;height:52px;font-size:24px}
@@ -381,7 +424,7 @@
 <header class="header" id="header">
   <div class="container header-inner">
     <a href="#" class="logo">
-Упаком ДВ<span class="logo-sub">упаковка оптом и в розницу</span>
+<span class="logo-title"><span class="logo-accent">ДВ</span> Упаком</span><span class="logo-sub">упаковка оптом и в розницу</span>
     </a>
     <nav class="nav">
       <a href="#catalog">Каталог</a>
@@ -411,14 +454,23 @@
   <div class="hero-particles"><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div></div>
   <div class="container hero-content">
     <div class="reveal">
-      <h1>Упаком ДВ — <span>Всё складывается удачно!</span></h1>
+      <h1><span class="logo-accent">ДВ</span> Упаком<span class="hero-slogan">Всё складывается удачно!</span></h1>
       <p class="hero-sub">Одноразовая посуда, упаковка и хозяйственные товары оптом для ресторанов, кафе, служб доставки и розничных магазинов. Более 2000 товаров в наличии.</p>
       <div class="hero-buttons">
         <a href="#catalog" class="btn-primary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> Перейти в каталог</a>
         <a href="#" class="btn-secondary" onclick="openModal('price');return false;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg> Заказать прайс</a>
       </div>
     </div>
-    <div class="hero-visual reveal-right"><div class="hero-shape"></div><div class="hero-shape-2"></div></div>
+    <div class="hero-visual reveal-right">
+      <div class="hero-glow"></div>
+      <div class="hero-emoji e1">🥤</div>
+      <div class="hero-emoji e2">🍽️</div>
+      <div class="hero-emoji e3">🛍️</div>
+      <div class="hero-emoji e4">🥡</div>
+      <div class="hero-emoji e5">🍴</div>
+      <div class="hero-emoji e6">🧴</div>
+      <div class="hero-badge-main"><div class="hero-badge-emoji">🥤</div><div class="hero-badge-title">2000+ товаров</div><div class="hero-badge-sub">для вашего бизнеса</div></div>
+    </div>
   </div>
 </section>
 
@@ -426,14 +478,14 @@
   <div class="container">
     <div class="reveal">
       <span class="section-label">Почему выбирают нас</span>
-      <h2 class="section-title">Преимущества работы с&nbsp;Упаком&nbsp;ДВ</h2>
+      <h2 class="section-title">Преимущества работы с&nbsp;<span class="logo-accent">ДВ</span>&nbsp;Упаком</h2>
       <p class="section-sub">Надёжный поставщик упаковки для вашего бизнеса в Хабаровском крае.</p>
     </div>
     <div class="advantages-grid stagger">
-      <div class="advantage-card"><div class="adv-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><h3>Большой ассортимент</h3><p>Более 5000 наименований: от одноразовой посуды до промышленной упаковки.</p></div>
-      <div class="advantage-card"><div class="adv-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><h3>Выгодные цены</h3><p>Прямые поставки от производителей. Работаем с НДС и без. Специальные условия для постоянных клиентов.</p></div>
-      <div class="advantage-card"><div class="adv-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div><h3>Доставка</h3><p>Отправляем заказы на следующий день в черте города, пригород 1-2 дня, уточняется у менеджера</p></div>
-      <div class="advantage-card"><div class="adv-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Поддержка бизнеса</h3><p>Помогаем с выбором, предоставляем образцы. Работаем с юрлицами и ИП. Отсрочка платежа для постоянных клиентов.</p></div>
+      <div class="advantage-card"><div class="adv-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><h3>Большой ассортимент</h3><p>Более 5000 наименований: от одноразовой посуды до промышленной упаковки.</p><div class="adv-deco">🛍️</div></div>
+      <div class="advantage-card"><div class="adv-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><h3>Выгодные цены</h3><p>Прямые поставки от производителей. Работаем с НДС и без. Специальные условия для постоянных клиентов.</p><div class="adv-deco">💰</div></div>
+      <div class="advantage-card"><div class="adv-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div><h3>Доставка</h3><p>Отправляем заказы на следующий день в черте города, пригород 1-2 дня, уточняется у менеджера</p><div class="adv-deco">🚚</div></div>
+      <div class="advantage-card"><div class="adv-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Поддержка бизнеса</h3><p>Помогаем с выбором, предоставляем образцы. Работаем с юрлицами и ИП. Отсрочка платежа для постоянных клиентов.</p><div class="adv-deco">🤝</div></div>
     </div>
   </div>
 </section>
@@ -465,15 +517,15 @@
     <div class="about-grid">
       <div class="about-text reveal">
         <span class="section-label">О компании</span>
-        <h2 class="section-title">Упаком ДВ — ваш надёжный партнёр</h2>
+        <h2 class="section-title"><span class="logo-accent">ДВ</span> Упаком — ваш надёжный партнёр</h2>
         <p>Работаем на рынке упаковки и одноразовой посуды с 1999 года. За это время мы превратились из небольшого склада в одного из крупнейших поставщиков Дальнего Востока. Наш центральный офис и склад находятся в Комсомольске-на-Амуре (ул. Гаражная, 2а), а сеть насчитывает 12 филиалов.</p>
         <p>Наша миссия — сделать упаковку доступной для каждого бизнеса. Мы предлагаем оптимальные решения для ресторанов, кафе, служб доставки, магазинов и производственных предприятий. В ассортименте более 5000 наименований: от одноразовой посуды до промышленной упаковки.</p>
-        <p>Почему выбирают Упаком: индивидуальный подход, быстрая обработка заказов, гибкая система скидок и собственный автопарк для оперативной доставки по Хабаровскому краю.</p>
+        <p>Почему выбирают ДВ Упаком: индивидуальный подход, быстрая обработка заказов, гибкая система скидок и собственный автопарк для оперативной доставки по Хабаровскому краю.</p>
       </div>
       <div class="stats-grid reveal-right">
-        <div class="stat-item"><div class="stat-number" data-target="5000">0</div><div class="stat-label">товаров в каталоге</div></div>
-        <div class="stat-item"><div class="stat-number" data-target="1500">0</div><div class="stat-label">довольных клиентов</div></div>
-        <div class="stat-item"><div class="stat-number" data-target="27">0</div><div class="stat-label">лет на рынке</div></div>
+        <div class="stat-item"><div class="stat-emoji">📦</div><div class="stat-number" data-target="5000">0</div><div class="stat-label">товаров в каталоге</div></div>
+        <div class="stat-item"><div class="stat-emoji">🤝</div><div class="stat-number" data-target="1500">0</div><div class="stat-label">довольных клиентов</div></div>
+        <div class="stat-item"><div class="stat-emoji">🎯</div><div class="stat-number" data-target="27">0</div><div class="stat-label">лет на рынке</div></div>
       </div>
     </div>
   </div>
@@ -568,7 +620,7 @@
       <div class="reveal" style="margin-bottom:32px;">
         <span class="section-label">Филиалы</span>
         <h2 class="section-title">12 филиалов розничной сети в Хабаровском крае</h2>
-        <p class="section-sub">Все адреса, где можно приобрести продукцию «Упаком».</p>
+        <p class="section-sub">Все адреса, где можно приобрести продукцию «ДВ Упаком».</p>
       </div>
       <div class="branches-grid stagger">
         <div class="branch-card"><div class="branch-num">Филиал 1</div><p>Гаражная улица, 2а, Комсомольск-на-Амуре</p></div>
@@ -606,12 +658,12 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-grid">
-      <div><div style="color:var(--white);margin-bottom:16px;"><div style="font-weight:800;font-size:1.5rem;">Упаком ДВ</div><span class="logo-sub">упаковка оптом и в розницу</span></div><p>Одноразовая посуда и упаковка оптом и в розницу в Хабаровском крае. Более 5000 товаров для вашего бизнеса.</p></div>
+      <div><div style="color:var(--white);margin-bottom:16px;"><div style="font-weight:800;font-size:1.5rem;"><span class="logo-accent">ДВ</span> Упаком</div><span class="logo-sub">упаковка оптом и в розницу</span></div><p>Одноразовая посуда и упаковка оптом и в розницу в Хабаровском крае. Более 5000 товаров для вашего бизнеса.</p></div>
       <div class="footer-links"><h4>Каталог</h4><a href="#catalog">Бытовая химия</a><a href="#catalog">Одноразовая посуда</a><a href="#catalog">Пакеты</a><a href="#catalog">Пищевая упаковка</a><a href="#catalog">Подарочная упаковка</a><a href="#catalog">Хозтовары</a></div>
       <div class="footer-links"><h4>Информация</h4><a href="#about">О компании</a><a href="#delivery">Доставка и оплата</a><a href="#blog">Блог</a><a href="#contacts">Контакты</a></div>
       <div><h4>Контакты</h4><p style="margin-bottom:8px;">+7 (4217) 54-49-45</p><p style="margin-bottom:8px;">8 (963) 828-81-14</p><p style="margin-bottom:8px;">upakom@yandex.ru</p><p>г. Комсомольск-на-Амуре, ул. Гаражная, 2а</p><p style="margin-top:8px;font-size:0.85rem;">Пн–Пт 9:00–18:00, Сб 9:00–15:00</p></div>
     </div>
-    <div class="footer-bottom"><span>© 2026 Упаком ДВ. Все права защищены.</span><span>Сайт разработан с любовью к упаковке</span></div>
+    <div class="footer-bottom"><span>© 2026 ДВ Упаком. Все права защищены.</span><span>Сайт разработан с любовью к упаковке</span></div>
   </div>
 </footer>
 
@@ -639,7 +691,7 @@
     <button class="chat-close" onclick="toggleChat()">✕</button>
   </div>
   <div class="chat-messages" id="chatMessages">
-    <div class="chat-msg bot">👋 Здравствуйте! Я Екатерина, ассистент Упаком ДВ. Спросите меня о товарах, ценах или наличии. Например: «Сколько стоят стаканы?» или «Есть ли пакеты для мусора?»</div>
+    <div class="chat-msg bot">👋 Здравствуйте! Я Екатерина, ассистент ДВ Упаком. Спросите меня о товарах, ценах или наличии. Например: «Сколько стоят стаканы?» или «Есть ли пакеты для мусора?»</div>
   </div>
   <div class="chat-input-wrap">
     <input type="text" id="chatInput" placeholder="Напишите вопрос..." onkeydown="if(event.key==='Enter')ask()">
@@ -820,6 +872,7 @@ const GROUP_ICONS = {
 
 let currentGroup = null;
 const groupMap = {};
+const STOP_WORDS = new Set(['сколько','цена','цены','стоит','стоят','почем','почём','есть','найти','найди','нужен','нужна','нужно','купить','ищу','покажи','дай','хочу','стоимость','заказать','оформить','товар','товара','товары','интересу','интересует','интересуют','интересуется','для','в','на','и','с','от','по','из','или','если','меня','мне','можно','посоветуй','посоветуйте','помоги','помогите','поможете','можете','можешь','подскажи','подскажите']);
 CATALOG_DATA.forEach(g => { groupMap[g.g] = g; });
 
 function renderCatalog() {
@@ -902,17 +955,35 @@ function renderProductCards(gName) {
   });
 }
 
+function searchCatalog(q) {
+  const phrase = String(q).toLowerCase().replace(/\s+/g, ' ').trim();
+  const qWords = phrase.replace(/[^а-яёa-z0-9\s\-]/gi, ' ').split(/[\s\-]+/).filter(w => !(w.length < 2 || /\d/.test(w) || STOP_WORDS.has(w)));
+  const results = [];
+  if (!qWords.length) return results;
+  CATALOG_DATA.forEach(g => g.subs.forEach(sub => sub.p.forEach(p => {
+    const name = p.n.toLowerCase();
+    if (!qWords.every(w => chatMatchWord(name, w))) return;
+    const rank = name === phrase ? 0 : name.startsWith(phrase) ? 1 : name.includes(phrase) ? 2 : 3;
+    const score = qWords.filter(w => name.includes(w)).length;
+    results.push({ p, group: g.g, sub: sub.n, rank, score });
+  })));
+  const precise = results.filter(r => r.rank < 3);
+  const final = precise.length ? precise : results;
+  final.sort((a, b) => a.rank - b.rank || b.score - a.score || a.p.n.length - b.p.n.length);
+  return final;
+}
+
 function renderSearchResults(query) {
   const container = document.getElementById('catalogContent');
-  const allProducts = [];
-  CATALOG_DATA.forEach(g => g.subs.forEach(sub => sub.p.forEach(p => { if (p.n.toLowerCase().includes(query)) allProducts.push({...p, group: g.g, sub: sub.n}); })));
+  const allProducts = searchCatalog(query);
   if (allProducts.length === 0) {
     container.innerHTML = '<div class="catalog-empty">😕 Ничего не найдено. Попробуйте изменить запрос.</div>';
     return;
   }
   container.innerHTML = `<div class="catalog-content-header"><h3>🔍 Результаты поиска</h3><span class="count">${allProducts.length} товаров</span></div><div class="product-grid" id="productGrid"></div>`;
   const grid = document.getElementById('productGrid');
-  allProducts.forEach(p => {
+  allProducts.forEach(res => {
+    const p = Object.assign({}, res.p, { group: res.group });
     const priceNum = parseFloat(p.pr.replace(/\s/g, '').replace(',', '.'));
     const priceDisplay = isNaN(priceNum) ? p.pr : fmtPrice(priceNum);
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, "&quot;");
@@ -1019,6 +1090,7 @@ function toggleChat() {
   chatAutoShown = true;
 }
 function closeChat() { if (chatOpen) toggleChat(); }
+function openOperatorForm() { if (chatOpen) toggleChat(); const f = document.getElementById('contactForm'); if (f) { f.scrollIntoView({behavior:'smooth', block:'center'}); const t = f.querySelector('textarea'); if (t) setTimeout(() => t.focus(), 700); } }
 function ask() {
   const input = document.getElementById('chatInput');
   const q = input.value.trim();
@@ -1050,13 +1122,95 @@ function hideTyping() {
   const el = document.getElementById('chatTyping');
   if (el) el.remove();
 }
+function chatCandidates(w) {
+  const base = chatSyn(w) || w;
+  const out = [base];
+  const cross = { 'пакет': 'мешк', 'пакеты': 'мешк', 'пакетик': 'мешк', 'пакетики': 'мешк', 'пакетиков': 'мешк', 'бумаж': 'картонн', 'бумажные': 'картонн', 'бумажный': 'картонн', 'бумажная': 'картонн' };
+  const x = cross[base] || cross[w];
+  if (x && out.indexOf(x) < 0) out.push(x);
+  return out;
+}
+function chatMatchWord(productName, w) {
+  if (!w) return false;
+  const pn = productName.toLowerCase();
+  return chatCandidates(w).some(base => {
+    if (pn.includes(base)) return true;
+    return chatStems(base).some(v => v && pn.includes(v));
+  });
+}
+function chatSyn(w) {
+  const SYN = {
+    'стаканчики': 'стакан', 'стаканчик': 'стакан', 'стаканчиков': 'стакан',
+    'стакашки': 'стакан', 'стаканчиками': 'стакан',
+    'пакетики': 'пакет', 'пакетик': 'пакет', 'пакетиков': 'пакет',
+    'мешочки': 'мешк', 'мешочек': 'мешк', 'мешочков': 'мешк', 'мешки': 'мешк',
+    'тарелочки': 'тарелка', 'тарелочка': 'тарелка', 'тарелочек': 'тарелка',
+    'ложечки': 'ложка', 'ложечка': 'ложка', 'ложек': 'ложка',
+    'вилочки': 'вилка', 'вилочка': 'вилка', 'вилок': 'вилка',
+    'ножики': 'нож', 'ножичек': 'нож',
+    'перчатки': 'перчатк', 'перчатку': 'перчатк', 'перчатка': 'перчатк',
+    'салфеточки': 'салфетка', 'салфеточка': 'салфетка', 'салфеточек': 'салфетка',
+    'полотенчики': 'полотенце', 'полотенчика': 'полотенце', 'полотенец': 'полотенце',
+    'бутылочки': 'бутылка', 'бутылочка': 'бутылка', 'бутылочек': 'бутылка',
+    'баночки': 'банка', 'баночка': 'банка', 'баночек': 'банка',
+    'контейнерчики': 'контейнер', 'контейнерчик': 'контейнер',
+    'коробочки': 'коробка', 'коробочка': 'коробка', 'коробочек': 'коробка',
+    'крышечки': 'крышка', 'крышечка': 'крышка', 'крышек': 'крышка',
+    'бумага': 'бумаж', 'бумажные': 'бумаж', 'бумажный': 'бумаж', 'бумажная': 'бумаж', 'бумажных': 'бумаж',
+    'мусор': 'мусор', 'мусорн': 'мусорн', 'мусорный': 'мусорн', 'мусорная': 'мусорн', 'мусорные': 'мусорн', 'мусорных': 'мусорн',
+    'одноразов': 'одноразов',
+    'вакуум': 'вакуум', 'вакуумные': 'вакуум', 'вакуумный': 'вакуум',
+    'зип': 'замок', 'зиплок': 'замок', 'зип-лок': 'замок', 'зиплоки': 'замок', 'замком': 'замок', 'замок': 'замок',
+    'фольг': 'фольг', 'фольга': 'фольг',
+    'скатерт': 'скатерт', 'скатерть': 'скатерт', 'скатерти': 'скатерт',
+    'палочки': 'палочк', 'палочка': 'палочк', 'палочек': 'палочк',
+    'трубочки': 'трубочк', 'трубочка': 'трубочк', 'трубочек': 'трубочк',
+    'пергамент': 'пергамент',
+    'пищевая': 'пищев', 'пищевые': 'пищев', 'пищевой': 'пищев', 'пищевую': 'пищев', 'пищевых': 'пищев',
+    'пластиковые': 'пластик', 'пластиковая': 'пластик', 'пластиковый': 'пластик', 'пластиковых': 'пластик',
+    'каши': 'каш', 'каша': 'каш'
+  };
+  return SYN[w] || null;
+}
+function chatStems(w) {
+  const s = [];
+  if (w.endsWith('чки')) s.push(w.slice(0, -3) + 'к');
+  if (w.endsWith('чек')) s.push(w.slice(0, -4) + 'к');
+  if (w.endsWith('чки')) s.push(w.slice(0, -2));
+  if (w.endsWith('ки')) s.push(w.slice(0, -1));
+  if (w.endsWith('ики')) s.push(w.slice(0, -3) + 'ка');
+  if (w.endsWith('ик')) s.push(w.slice(0, -2));
+  if (w.endsWith('ы')) s.push(w.slice(0, -1));
+  if (w.endsWith('и')) s.push(w.slice(0, -1));
+  if (w.endsWith('а') || w.endsWith('я')) s.push(w.slice(0, -1));
+  return s;
+}
 function answer(q) {
   const lq = q.toLowerCase().trim();
-  if (/здравств|привет|ку-ку|hi|hello/i.test(lq)) return 'Здравствуйте! Чем могу помочь? Спросите о товарах по названию, например: «Сколько стоят перчатки?» или «Пакеты для мусора»';
-  if (/спасиб|понял|ок|понят/i.test(lq)) return 'Пожалуйста! Если появятся вопросы — обращайтесь.';
-  if (/контакт|адрес|телефон|как найти|где/i.test(lq)) return 'Наш адрес: г. Комсомольск-на-Амуре, ул. Гаражная, 2а<br>📞 +7 (4217) 54-49-45<br>📱 8 (963) 828-81-14<br>✉ upakom@yandex.ru<br>🕐 Пн–Пт 9:00–18:00, Сб 9:00–15:00';
-  if (/доставк|оплат/i.test(lq)) return '🚚 Доставка по г. Комсомольск-на-Амуре и Хабаровскому краю.<br>💰 Оплата наличными или безналичным расчётом для юридических лиц.<br>Уточните условия у нашего менеджера — кнопка «Заказать звонок» внизу.';
-  if (/ассортимент|каталог|вс[её] товар/i.test(lq)) return 'У нас более 5000 товаров: одноразовая посуда, пакеты, пищевая упаковка, подарочная упаковка, хозтовары, бытовая химия. Выберите раздел в каталоге слева.';
+  const lqC = lq.replace(/[^а-яёa-z0-9]/gi, '');
+  const m = re => re.test(lq) || re.test(lqC);
+  const helpSearch = /помоги\w*\s*(найти|подобрать|выбрать|купить)/i.test(lq);
+  if (m(/здравств|привет|прив\s*ет|ку[-\s]*ку|добрый\s*день|добрый\s*вечер|доброе\s*утро|hi|hello/)) return 'Здравствуйте! Чем могу помочь? Спросите о товарах по названию, например: «Сколько стоят перчатки?» или «Пакеты для мусора»';
+  if (m(/что\s*ты\s*умеешь|что\s*умеешь|ты\s*умеешь|как\s*ты\s*работаешь|что\s*ты\s*можешь|что\s*можешь|ты\s*можешь|помощь|помогит?/) && !helpSearch) return 'Я умею:<br>🔍 Искать товары по названию (цены и наличие)<br>📦 Рассказывать об ассортименте<br>🚚 Отвечать про доставку и оплату<br>🛒 Помогать с оформлением заказа<br>Просто напишите, что вам нужно, например: «стаканчики бумажные» или «пакеты для мусора»';
+  if (m(/как\s*дел[ао]|как\s*ты|как\s*жизн|как\s*настроени|дел[ао]\s*как|как\s*сам[а]?|как\s*оно|как\s*поживаешь|как\s*вы\s*поживаете|как\s*у\s*вас\s*дела/)) return 'У меня всё отлично! Я ассистент ДВ Упаком, помогаю подобрать товары, узнать цены и наличие. Что вас интересует? 😊';
+  if (m(/чем\s*занимает|что\s*делаете|что\s*вы\s*делаете|чем\s*вы\s*занимаетесь|что\s*за\s*компани|что\s*это\s*за\s*компания|кто\s*вы\s*по|кто\s*вы\s*такие/)) return 'ДВ Упаком — поставщик одноразовой посуды, упаковки и хозтоваров оптом и в розницу. Работаем с 1999 года, у нас 12 филиалов в Хабаровском крае и более 5000 товаров.';
+  if (m(/кто\s*ты|ты\s*кто|кто\s*такая|кто\s*такой|кто\s*вы|что\s*ты\s*за/)) return 'Я Екатерина — виртуальный ассистент компании ДВ Упаком. Помогу подобрать упаковку, одноразовую посуду, пакеты и другие товары. Задайте вопрос!';
+  if (m(/как\s*вас\s*зовут|как\s*тебя\s*зовут|как\s*зовут|ваше\s*имя|твое\s*имя|представься/)) return 'Меня зовут Екатерина! Я ассистент ДВ Упаком. Приятно познакомиться 😊 Чем могу помочь?';
+  if (m(/спасиб|благодар|понял|понят|окей|ясно|вс[её]\s*понятно/) || /(^|[^а-яёa-z0-9])ок([^а-яёa-z0-9]|$)/i.test(lq)) return 'Пожалуйста! Если появятся вопросы — обращайтесь.';
+  if (m(/контакт|адрес|телефон|как\s*найти|как\s*добраться|где\s*вы\s*находит|где\s*находится|где\s*ваш\s*офис/)) return 'Наш адрес: г. Комсомольск-на-Амуре, ул. Гаражная, 2а<br>📞 +7 (4217) 54-49-45<br>📱 8 (963) 828-81-14<br>✉ upakom@yandex.ru<br>🕐 Пн–Пт 9:00–18:00, Сб 9:00–15:00';
+  if (m(/филиал|магазин|где\s*купить|пункт\s*выдачи|адреса\s*магазин/)) return '🏪 У нас 12 филиалов розничной сети в Хабаровском крае. Центральный офис и склад: г. Комсомольск-на-Амуре, ул. Гаражная, 2а. Забрать заказ можно со склада или в любом из филиалов.';
+  if (m(/график|режим\s*работы|часы\s*работы|когда\s*работаете|когда\s*открыт|когда\s*закрываетесь|во\s*сколько\s*работаете/)) return '🕐 Пн–Пт 9:00–18:00, Сб 9:00–15:00, Вс — выходной.';
+  if (m(/доставк|оплат/)) return '🚚 Доставка по г. Комсомольск-на-Амуре и Хабаровскому краю.<br>💰 Оплата наличными или безналичным расчётом для юридических лиц.<br>Уточните условия у нашего менеджера — кнопка «Заказать звонок» внизу.';
+  if (m(/наличн|безналич|рассрочк|кредит|оплата\s*картой|перечисл/)) return '💰 Оплата наличными или безналичным расчётом для юридических лиц. Возможна отсрочка платежа для постоянных клиентов. Точные условия — у менеджера.';
+  if (m(/опт|розниц|юр\s*лиц|ооо|организац|для\s*бизнеса/)) return '🏢 Работаем с ИП, ООО и организациями: персональный торговый представитель, индивидуальные условия, отсрочка платежа. Для оптовых вопросов нажмите «Связаться с отделом» на странице контактов.';
+  if (m(/скидк|дешев|выгодн|акци|распродаж/)) return '🎁 У нас гибкая система скидок для постоянных клиентов и оптовых покупателей. Лучшие условия — при заказе через менеджера. Кнопка «Заказать звонок» внизу, либо «Связаться с отделом».';
+  if (m(/плох|не\s*работает|ошибк|баг|не\s*открывается|сломан/)) return '🙏 Извините за неудобства! Попробуйте обновить страницу. Если проблема повторится — напишите нам через форму «Напишите нам» внизу страницы, мы разберёмся.';
+  if (m(/ты\s*бот|робот|искусствен|нейросет|чат\s*gpt|gpt/)) return 'Да, я искусственный интеллект — ассистент компании ДВ Упаком 🤖 Но отвечаю быстро и по делу! Спрашивайте о товарах.';
+  if (m(/шути|смешн|анекдот|расмеши|пошути/)) return 'Почему бумажные стаканчики никогда не ссорятся? Потому что они всегда вместе на одной подставке! 😄 Может, поговорим о товарах?';
+  if (m(/до\s*свидания|до\s*встречи|прощай|всего\s*добр|спокойной\s*ночи|бывай/) || /(^|[^а-яёa-z0-9])пока[.!?\s]*$/i.test(lq) || lqC==='пока') return 'До свидания! Буду рада помочь снова. Если что-то нужно — пишите! 👋';
+  if (m(/ассортимент|каталог|вс[её]\s*товар|что\s*вы\s*продаете|что\s*продаете/)) return 'У нас более 5000 товаров: одноразовая посуда, пакеты, пищевая упаковка, подарочная упаковка, хозтовары, бытовая химия. Выберите раздел в каталоге слева или напишите название товара.';
+  if (m(/подар/)) return '🎁 В каталоге есть раздел «Подарочная упаковка»: подарочные пакеты, ленты, шары, листы подарочной бумаги и декор. Откройте раздел в каталоге или напишите конкретный товар — например, «пакет подарочный».';
+  if (m(/как\s*оформить|как\s*заказать|как\s*купить|как\s*сделать\s*заказ/)) return 'Чтобы оформить заказ: добавьте нужные товары в корзину (кнопка «+» рядом с товаром), затем нажмите «Оформить заказ» в корзине или внизу страницы. Если нужна помощь менеджера — нажмите «Заказать звонок».';
   if (/заказ|оформить|купить/i.test(lq) && !/как|что|почем|сколько|цена|стоит|есть|найти/i.test(lq)) {
     const cartItems = Object.entries(cart);
     if (cartItems.length === 0) return 'Для оформления заказа добавьте товары в корзину из каталога, затем нажмите кнопку «Оформить заказ» в корзине или внизу страницы.';
@@ -1068,23 +1222,14 @@ function answer(q) {
     summary += ' <button class="chat-call-btn" onclick="closeChat();openModal(\'call\')">📞 Заказать звонок</button>';
     return summary;
   }
-  const searchTerm = lq.replace(/[^а-яёa-z0-9\s]/gi, ' ').split(/\s+/).filter(w => !/сколько|цена|стоит|стоят|почем|есть|найти|нужен|нужна|нужно|купить|ищу|покажи|дай|хочу|стоимость|заказать|оформить|товар|товара|товары/i.test(w)).join(' ').trim();
-  const products = [];
-  if (searchTerm) {
-    CATALOG_DATA.forEach(g => {
-      g.subs.forEach(sub => {
-        sub.p.forEach(p => {
-          if (p.n.toLowerCase().includes(searchTerm)) products.push({ n: p.n, pr: p.pr, u: p.u, g: g.g, pq: p.pq });
-        });
-      });
-    });
-  }
-  if (!products.length) return '😕 Не нашёл товаров по вашему запросу. Попробуйте другие слова, например: «стаканы», «пакеты», «перчатки», «тарелки». Или посмотрите разделы каталога слева.';
+  const searchTerm = lq.replace(/[^а-яёa-z0-9\s]/gi, ' ').split(/\s+/).filter(w => !(w.length < 2 || /\d/.test(w) || STOP_WORDS.has(w))).join(' ').trim();
+  const products = searchCatalog(lq).map(r => ({ n: r.p.n, pr: r.p.pr, u: r.p.u, g: r.group, pq: r.p.pq }));
+  if (!products.length) return '🤔 Затрудняюсь ответить на этот вопрос. Я лучше всего знаю товары, их цены и наличие. Уточните, что именно вам нужно, например: «пакеты для мусора» или «бумажные стаканчики». Если ваш вопрос не о товарах — оставьте его, и наш оператор ответит вам.<br><button class="chat-operator-btn" onclick="openOperatorForm()">✍️ Оставить вопрос оператору</button>';
   const priceNum = s => {
     const n = parseFloat(s.replace(/\s/g, '').replace(',', '.'));
     return isNaN(n) ? s : fmtPrice(n) + ' ₽';
   };
-  const shown = products.slice(0, 30);
+  const shown = products.slice(0, 10);
   let html = 'Вот что нашлось (' + products.length + '):<br>';
   shown.forEach((p, i) => {
     const escName = p.n.replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -1098,9 +1243,9 @@ function answer(q) {
     html += '<button class="chat-product-view" onclick="goToProduct(\'' + escName + '\',\'' + p.g.replace(/'/g, "\\'") + '\')" title="В каталог">📂</button>';
     html += '</div></div>';
   });
-  if (products.length > 30) html += '<div class="chat-hint">Показаны первые 30 из ' + products.length + '.<br>';
-  html += '<button class="chat-goto-catalog" onclick="goToCatalogSearch(\'' + searchTerm.replace(/'/g, "\\'") + '\')">Открыть все в каталоге →</button>';
-  if (products.length > 30) html += '</div>';
+  if (products.length > 10) html += '<div class="chat-hint">Показаны первые 10 из ' + products.length + '.<br>';
+  html += '<button class="chat-goto-catalog" onclick="goToCatalogSearch(\'' + lq.replace(/'/g, "\\'") + '\')">Открыть все в каталоге →</button>';
+  if (products.length > 10) html += '</div>';
   return html;
 }
 function chatAddToCart(name, price, pq) {
