@@ -692,7 +692,7 @@
 </div>
 
 <button class="chat-toggle" id="chatToggle" onclick="toggleChat(true)" title="Задать вопрос">💬</button>
-<button class="catalog-back" id="catalogBack" onclick="goToCatalog()" title="Вернуться в начало каталога">↺</button>
+<button class="catalog-back" id="catalogBack" onclick="goToCatalog()" title="Вернуться к началу поиска">↑</button>
 <div class="chat-panel" id="chatPanel">
   <div class="chat-header">
     <div style="display:flex;align-items:center"><img src="/chat-icon.jpg" alt="" id="chatAvatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px"><h3>Екатерина</h3></div>
@@ -1278,14 +1278,10 @@ function goToCatalogSearch(term) {
 }
 function goToCatalog() {
   if (chatOpen) toggleChat();
-  const input = document.getElementById('catalogSearch');
-  if (input) { input.value = ''; }
-  currentGroup = null;
-  renderCatalog();
   const cat = document.getElementById('catalog');
   if (cat) {
     const o = document.querySelector('header').offsetHeight;
-    window.scrollTo({ top: cat.getBoundingClientRect().top + window.scrollY - o, behavior: 'smooth' });
+    window.scrollTo({ top: Math.max(cat.getBoundingClientRect().top + window.scrollY - o, 0), behavior: 'smooth' });
   }
 }
 function goToProduct(name, group) {
