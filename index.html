@@ -14,6 +14,7 @@
     :root{--black:#0a0a1a;--blue:#0044ff;--blue-dark:#0033cc;--blue-light:#4488ff;--white:#ffffff;--gray:#f4f6fb;--gray-dark:#8890a0;--shadow:0 8px 32px rgba(0,0,0,0.12);--radius:16px;--transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94);--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
     html{scroll-behavior:smooth}
     html{overflow-x:hidden}
+    .hero,.about,.contacts{overflow-x:hidden}
     body{font-family:var(--font);color:var(--black);background:var(--white);line-height:1.6;overflow-x:hidden}
     img{max-width:100%;height:auto;display:block}
     a{text-decoration:none;color:inherit}
@@ -1098,7 +1099,7 @@ function toggleChat(focusInput) {
   chatAutoShown = true;
 }
 function closeChat() { if (chatOpen) toggleChat(); }
-function openOperatorForm() { if (chatOpen) toggleChat(); const f = document.getElementById('contactForm'); if (f) { f.scrollIntoView({behavior:'smooth', block:'center'}); const t = f.querySelector('textarea'); if (t) setTimeout(() => t.focus(), 700); } }
+function openOperatorForm() { if (chatOpen) toggleChat(); const f = document.getElementById('contactForm'); if (f) { const o = document.querySelector('header').offsetHeight; window.scrollTo({ top: Math.max(f.getBoundingClientRect().top + window.scrollY - o, 0), behavior: 'smooth' }); const t = f.querySelector('textarea'); if (t) setTimeout(() => t.focus(), 700); } }
 function ask() {
   const input = document.getElementById('chatInput');
   const q = input.value.trim();
@@ -1297,7 +1298,14 @@ function goToProduct(name, group) {
   if (group && groupMap[group]) selectGroup(group);
   setTimeout(() => {
     const card = document.querySelector('.product-card[data-product="' + name.replace(/"/g, '&quot;') + '"]');
-    if (card) { card.style.scrollMargin = '80px'; card.scrollIntoView({ behavior: 'smooth', block: 'center' }); card.style.transition = 'box-shadow 0.3s'; card.style.boxShadow = '0 0 0 3px var(--blue)'; setTimeout(() => { card.style.boxShadow = ''; }, 2000); }
+    if (card) {
+      const o = document.querySelector('header').offsetHeight;
+      const top = Math.max(card.getBoundingClientRect().top + window.scrollY - o - 12, 0);
+      window.scrollTo({ top, behavior: 'smooth' });
+      card.style.transition = 'box-shadow 0.3s';
+      card.style.boxShadow = '0 0 0 3px var(--blue)';
+      setTimeout(() => { card.style.boxShadow = ''; }, 2000);
+    }
   }, 200);
 }
 </script>
