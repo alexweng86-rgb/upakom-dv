@@ -1101,6 +1101,7 @@ function beep() {
 let chatOpen = false;
 let chatAutoShown = false;
 setTimeout(() => {
+  if (window.matchMedia('(max-width: 768px)').matches) return;
   if (!chatOpen && !chatAutoShown) {
     chatAutoShown = true;
     playClick();
