@@ -981,20 +981,23 @@ function renderProductCards(gName) {
 
 function searchCatalog(q) {
   const phrase = String(q).toLowerCase().replace(/\s+/g, ' ').trim();
-  const qWords = phrase.replace(/[^а-яёa-z0-9\s\-]/gi, ' ').split(/[\s\-]+/).filter(w => !(w.length < 2 || /\d/.test(w) || STOP_WORDS.has(w)));
+  const qWords = phrase.replace(/[^а-яёa-z0-9\s\-]/gi, ' ').split(/[\s\-]+/).filter(w => w.length > 1 && !STOP_WORDS.has(w));
   const results = [];
   if (!qWords.length) return results;
+  const weight = w => /\d/.test(w) ? 2 : 1;
+  const totalW = qWords.reduce((s, w) => s + weight(w), 0);
   CATALOG_DATA.forEach(g => g.subs.forEach(sub => sub.p.forEach(p => {
-    const name = p.n.toLowerCase();
-    if (!qWords.every(w => chatMatchWord(name, w))) return;
-    const rank = name === phrase ? 0 : name.startsWith(phrase) ? 1 : name.includes(phrase) ? 2 : 3;
-    const score = qWords.filter(w => name.includes(w)).length;
+    const raw = p.n.toLowerCase();
+    const name = raw.replace(/(\d)\s+(л|мл|г|кг|гр)\b/g, '$1$2');
+    const matched = qWords.filter(w => chatMatchWord(name, w));
+    if (!matched.length) return;
+    const rank = raw === phrase ? 0 : raw.startsWith(phrase) ? 1 : raw.includes(phrase) ? 2 : 3;
+    const score = matched.reduce((s, w) => s + weight(w), 0);
     results.push({ p, group: g.g, sub: sub.n, rank, score });
   })));
-  const precise = results.filter(r => r.rank < 3);
-  const final = precise.length ? precise : results;
-  final.sort((a, b) => a.rank - b.rank || b.score - a.score || a.p.n.length - b.p.n.length);
-  return final;
+  const sorter = (a, b) => b.score - a.score || a.rank - b.rank || a.p.n.length - b.p.n.length;
+  const full = results.filter(r => r.score === totalW);
+  return (full.length ? full : results).sort(sorter);
 }
 
 function renderSearchResults(query) {
