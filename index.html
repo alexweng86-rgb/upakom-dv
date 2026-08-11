@@ -343,6 +343,8 @@
     .cart-item-remove{background:none;border:none;color:var(--gray-dark);cursor:pointer;font-size:1.1rem;padding:4px;transition:var(--transition)}
     .cart-item-remove:hover{color:red}
     .cart-footer{padding:20px 28px 28px;border-top:1px solid #eef0f6}
+    body.cart-open .catalog-back{z-index:2600}
+    body.cart-open .cart-footer{padding-bottom:80px}
     .cart-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.15rem;margin-bottom:16px}
     .cart-note{margin-bottom:16px;padding:10px 12px;background:var(--gray);border-radius:10px;font-size:0.72rem;color:var(--gray-dark);line-height:1.5}
     .cart-footer .btn-submit{font-size:0.95rem;padding:14px}
@@ -765,8 +767,8 @@ function renderCart(){const total=Object.values(cart).reduce((s,item)=>s+item.qt
     list.insertBefore(div,empty)});
   totalEl.textContent=fmtPrice(sum)+' ₽'}
 document.getElementById('cartBtn').addEventListener('click',()=>{if(Object.keys(cart).length===0)showToast('Корзина пуста');else openCart()});
-function openCart(){document.getElementById('cartModal').classList.add('open');document.getElementById('cartBackdrop').classList.add('open');document.body.style.overflow='hidden'}
-function closeCart(){document.getElementById('cartModal').classList.remove('open');document.getElementById('cartBackdrop').classList.remove('open');document.body.style.overflow=''}
+function openCart(){document.getElementById('cartModal').classList.add('open');document.getElementById('cartBackdrop').classList.add('open');document.body.classList.add('cart-open');document.body.style.overflow='hidden'}
+function closeCart(){document.getElementById('cartModal').classList.remove('open');document.getElementById('cartBackdrop').classList.remove('open');document.body.classList.remove('cart-open');document.body.style.overflow=''}
 function continueShopping(){closeCart();const cat=document.getElementById('catalog');const o=document.querySelector('header').offsetHeight;if(cat)window.scrollTo({top:cat.getBoundingClientRect().top+window.scrollY-o,behavior:'smooth'});const input=document.getElementById('catalogSearch');if(input)setTimeout(()=>input.focus(),500)}
 document.getElementById('cartBackdrop').addEventListener('click',closeCart);
 let toastTimeout;
@@ -1278,6 +1280,7 @@ function goToCatalogSearch(term) {
 }
 function goToCatalog() {
   if (chatOpen) toggleChat();
+  closeCart();
   const cat = document.getElementById('catalog');
   if (cat) {
     const o = document.querySelector('header').offsetHeight;
