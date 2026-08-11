@@ -13,6 +13,7 @@
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
     :root{--black:#0a0a1a;--blue:#0044ff;--blue-dark:#0033cc;--blue-light:#4488ff;--white:#ffffff;--gray:#f4f6fb;--gray-dark:#8890a0;--shadow:0 8px 32px rgba(0,0,0,0.12);--radius:16px;--transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94);--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
     html{scroll-behavior:smooth}
+    html{overflow-x:hidden}
     body{font-family:var(--font);color:var(--black);background:var(--white);line-height:1.6;overflow-x:hidden}
     img{max-width:100%;height:auto;display:block}
     a{text-decoration:none;color:inherit}
@@ -287,7 +288,7 @@
       .hero-buttons .btn-primary,.hero-buttons .btn-secondary{justify-content:center}
       .modal{padding:24px}
       .modal-overlay{padding:16px}
-      .chat-panel{left:12px;right:12px;bottom:90px;width:auto;height:70vh}
+      .chat-panel{left:12px;right:12px;bottom:90px;width:auto;height:min(60vh,480px)}
       .chat-toggle{bottom:16px;right:16px;width:54px;height:54px;font-size:24px}
       .cart-float{bottom:14px}
       .chat-messages{padding:12px}
@@ -414,7 +415,8 @@
     .chat-operator-btn{display:block;width:100%;margin-top:8px;padding:10px 16px;border-radius:12px;border:2px solid var(--blue);background:transparent;color:var(--blue);font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:var(--font)}
     .chat-operator-btn:hover{background:var(--blue);color:var(--white);transform:scale(1.02)}
     @media(max-width:480px){
-      .chat-panel{right:12px;left:12px;width:auto;bottom:90px;height:calc(100vh - 180px)}
+      .chat-panel{right:12px;left:12px;width:auto;bottom:90px;height:min(60vh,480px)}
+      .chat-input-wrap input{font-size:16px}
       .chat-toggle{right:16px;bottom:16px;width:52px;height:52px;font-size:24px}
     }
   </style>
@@ -683,7 +685,7 @@
   </div>
 </div>
 
-<button class="chat-toggle" id="chatToggle" onclick="toggleChat()" title="Задать вопрос">💬</button>
+<button class="chat-toggle" id="chatToggle" onclick="toggleChat(true)" title="Задать вопрос">💬</button>
 <div class="chat-panel" id="chatPanel">
   <div class="chat-header">
     <div style="display:flex;align-items:center"><img src="/chat-icon.jpg" alt="" id="chatAvatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px"><h3>Екатерина</h3></div>
@@ -1083,10 +1085,10 @@ setTimeout(() => {
     toggleChat();
   }
 }, 5000);
-function toggleChat() {
+function toggleChat(focusInput) {
   chatOpen = !chatOpen;
   document.getElementById('chatPanel').classList.toggle('open', chatOpen);
-  if (chatOpen) document.getElementById('chatInput').focus();
+  if (chatOpen && focusInput) document.getElementById('chatInput').focus();
   chatAutoShown = true;
 }
 function closeChat() { if (chatOpen) toggleChat(); }
