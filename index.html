@@ -156,6 +156,7 @@
     .product-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.04);overflow:hidden;transition:var(--transition);display:flex;flex-direction:column}
     .product-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,68,255,0.1)}
     .product-card-icon{height:100px;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:2rem}
+    .product-card-img{height:100px;width:100%;object-fit:contain;background:#fff;display:block}
     .product-card-body{padding:14px;flex:1;display:flex;flex-direction:column}
     .product-card-name{font-size:0.82rem;font-weight:600;line-height:1.3;margin-bottom:6px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
     .product-card-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -746,6 +747,7 @@
 </div>
 
 <script src="catalog-data.js"></script>
+<script src="product-images.js"></script>
 <script>
 const burger=document.getElementById('burger');
 const navMobile=document.getElementById('navMobile');
@@ -899,6 +901,14 @@ const groupMap = {};
 const STOP_WORDS = new Set(['сколько','цена','цены','стоит','стоят','почем','почём','есть','найти','найди','нужен','нужна','нужно','купить','ищу','покажи','дай','хочу','стоимость','заказать','оформить','товар','товара','товары','интересу','интересует','интересуют','интересуется','для','в','на','и','с','от','по','из','или','если','меня','мне','можно','посоветуй','посоветуйте','помоги','помогите','поможете','можете','можешь','подскажи','подскажите']);
 CATALOG_DATA.forEach(g => { groupMap[g.g] = g; });
 
+function productCardIcon(p, group) {
+  const img = PRODUCT_IMAGES && PRODUCT_IMAGES[p.n];
+  const icon = GROUP_ICONS[group || p.group] || '📦';
+  return img
+    ? `<img src="${img}" alt="${escJsAttr(p.n)}" class="product-card-img" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'product-card-icon',textContent:'📦'}))">`
+    : `<div class="product-card-icon">${icon}</div>`;
+}
+
 function renderCatalog() {
   const query = (document.getElementById('catalogSearch').value || '').toLowerCase().trim();
   renderSidebar(query);
@@ -974,7 +984,7 @@ function renderProductCards(gName) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.dataset.product = p.n;
-    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}','${escPq}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
+    card.innerHTML = `${productCardIcon(p, gName)}<div class="product-card-body"><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}','${escPq}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
     grid.appendChild(card);
   });
 }
@@ -1022,7 +1032,7 @@ function renderSearchResults(query) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.dataset.product = p.n;
-    card.innerHTML = `<div class="product-card-icon">${icon}</div><div class="product-card-body"><div style="font-size:0.7rem;color:var(--gray-dark);margin-bottom:4px;">${p.group}</div><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}','${escPq}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
+    card.innerHTML = `${productCardIcon(p, p.group)}<div class="product-card-body"><div style="font-size:0.7rem;color:var(--gray-dark);margin-bottom:4px;">${p.group}</div><div class="product-card-name">${p.n}</div><div class="product-card-meta"><span class="product-card-unit">${p.u}</span><span class="product-card-price">${priceDisplay} ₽</span></div><div class="product-card-pack">${fmtPack(p.pq)}</div><div class="product-card-actions"><button class="product-card-add" onclick="addToCatalogProductCard('${escName}','${escPrice}','${escPq}',this)" style="${inCart?'display:none':''}">+</button><div class="product-card-qty${inCart?' show':''}"><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',-1,this)">−</button><span class="product-card-qty-count">${inCart?item.qty:0}</span><button class="product-card-qty-btn" onclick="changeCatalogQtyCard('${escName}','${escPrice}',1,this)">+</button><span class="product-card-subtotal">${inCart?fmtPrice(item.qty*(item.price||0))+' ₽':''}</span></div></div></div>`;
     grid.appendChild(card);
   });
 }
