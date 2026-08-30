@@ -45,7 +45,7 @@ export default {
     }
 
     try {
-      await handleBotUpdate(body, { API, AUTH, sendTo, OWNER });
+      await handleBotUpdate(body, { API, AUTH, sendTo, OWNER, KV: env.MAX_STATE });
     } catch (e) {
       try { await sendTo(OWNER, { text: '[bot error] ' + String(e).slice(0, 300) }); } catch (_) {}
     }
@@ -65,7 +65,15 @@ const SECTIONS = [
   ['Для отдыха и пикника', '🏕️ Горелки, газ, сушки, одноразовая посуда для выездов.']
 ];
 
-const PURPOSE = new Map();
+async function setPurpose(ctx, key, val) {
+  try { await ctx.KV.put(key, String(val), { expirationTtl: 86400 }); } catch (e) {}
+}
+async function getPurpose(ctx, key) {
+  try { return await ctx.KV.get(key); } catch (e) { return null; }
+}
+async function clearPurpose(ctx, key) {
+  try { await ctx.KV.delete(key); } catch (e) {}
+}
 
 const KEYBOARD = {
   type: 'inline_keyboard',
@@ -195,7 +203,7 @@ async function handleBotUpdate(upd, ctx) {
   if (t === 'bot_started' || (t === 'message_created' && (upd.message.body.text || '').replace(/^[\/\s]+/, '').toLowerCase().slice(0, 5) === 'start')) {
     const userId = t === 'bot_started' ? (upd.user && upd.user.user_id) : (upd.message.sender && upd.message.sender.user_id);
     if (userId) {
-      PURPOSE.set(String(userId), 'Первичное обращение');
+      await setPurpose(ctx, String(userId), 'Первичное обращение');
       await ctx.sendTo(userId, { text: GREETING, attachments: [KEYBOARD] });
     }
     return;
@@ -232,11 +240,11 @@ async function handleBotUpdate(upd, ctx) {
     const phoneLine = phone ? '\n📞 Телефон: ' + phone : '';
     const nameLine = name && name.trim() ? '\n👤 Имя: ' + name.trim() : '';
     const verified = p.hash ? '\n✅ Номер подтверждён аккаунтом MAX' : '\n⚠️ Номер без подтверждения (прислан вручную)';
-    const purposeText = PURPOSE.get(String(senderId)) || 'Нажал кнопку «Перезвоните мне» без уточнения цели';
+    const purposeText = (await getPurpose(ctx, String(senderId))) || 'Нажал кнопку «Перезвоните мне» без уточнения цели';
     if (!isOwner) {
       await ctx.sendTo(ctx.OWNER, { text: info + phoneLine + nameLine + verified + '\n🎯 Цель: ' + purposeText + '\n—\nПрофиль: https://max.ru/' + senderId });
     }
-    PURPOSE.delete(String(senderId));
+    await clearPurpose(ctx, String(senderId));
     await ctx.sendTo(senderId, { text: ANSWERS.thanks });
     return;
   }
@@ -248,10 +256,10 @@ async function handleBotUpdate(upd, ctx) {
     if (r.re.test(lower)) {
       if (r.a === 'catalog') {
         const cats = SECTIONS.map(function (s, i) { return (i + 1) + '. ' + s[0]; }).join('\n');
-        PURPOSE.set(String(senderId), 'Интересовался ассортиментом (каталогом)');
+        await setPurpose(ctx, String(senderId), 'Интересовался ассортиментом (каталогом)');
         await ctx.sendTo(senderId, { text: '🛍 Разделы каталога:\n' + cats + '\n\nВыберите интересующий раздел — расскажу подробнее. Полный каталог на сайте dv-upakom.ru.', attachments: [CATALOG_KB] });
       } else {
-        PURPOSE.set(String(senderId), purposeLabel(r.a));
+        await setPurpose(ctx, String(senderId), purposeLabel(r.a));
         await ctx.sendTo(senderId, { text: ANSWERS[r.a], attachments: [KEYBOARD] });
       }
       return;
@@ -260,7 +268,7 @@ async function handleBotUpdate(upd, ctx) {
 
   // Нераспознан: клиенту - запрос контакта, владельцу - вопрос
   const from = [sender.first_name, sender.last_name].filter(Boolean).join(' ').trim() || ('ID ' + senderId);
-  PURPOSE.set(String(senderId), 'Вопрос: ' + text);
+  await setPurpose(ctx, String(senderId), 'Вопрос: ' + text);
   await ctx.sendTo(senderId, { text: ANSWERS.unknown, attachments: [KEYBOARD] });
   if (!isOwner) {
     await ctx.sendTo(ctx.OWNER, {
@@ -287,24 +295,24 @@ async function handleMenuPayload(payload, userId, ctx) {
   const key = String(userId);
   if (payload === 'menu:catalog') {
     const cats = SECTIONS.map(function (s, i) { return (i + 1) + '. ' + s[0]; }).join('\n');
-    PURPOSE.set(key, 'Интересовался ассортиментом (каталогом)');
+    await setPurpose(ctx, key, 'Интересовался ассортиментом (каталогом)');
     await ctx.sendTo(userId, { text: '🛍 Разделы каталога:\n' + cats + '\n\nВыберите интересующий раздел — расскажу подробнее. Полный каталог на сайте dv-upakom.ru.', attachments: [CATALOG_KB] });
     return;
   }
-  if (payload === 'menu:delivery') { PURPOSE.set(key, 'Интересует доставка'); await ctx.sendTo(userId, { text: ANSWERS.delivery, attachments: [KEYBOARD] }); return; }
-  if (payload === 'menu:payment') { PURPOSE.set(key, 'Интересует оплата'); await ctx.sendTo(userId, { text: ANSWERS.payment, attachments: [KEYBOARD] }); return; }
-  if (payload === 'menu:contacts') { PURPOSE.set(key, 'Ищет контакты / адрес'); await ctx.sendTo(userId, { text: ANSWERS.contacts, attachments: [KEYBOARD] }); return; }
+  if (payload === 'menu:delivery') { await setPurpose(ctx, key, 'Интересует доставка'); await ctx.sendTo(userId, { text: ANSWERS.delivery, attachments: [KEYBOARD] }); return; }
+  if (payload === 'menu:payment') { await setPurpose(ctx, key, 'Интересует оплата'); await ctx.sendTo(userId, { text: ANSWERS.payment, attachments: [KEYBOARD] }); return; }
+  if (payload === 'menu:contacts') { await setPurpose(ctx, key, 'Ищет контакты / адрес'); await ctx.sendTo(userId, { text: ANSWERS.contacts, attachments: [KEYBOARD] }); return; }
   if (payload === 'menu:wholesale') {
-    PURPOSE.set(key, 'Интересуют оптовые условия');
+    await setPurpose(ctx, key, 'Интересуют оптовые условия');
     await ctx.sendTo(userId, { text: ANSWERS.wholesale, attachments: [SINGLE_CONTACT_KB] });
     return;
   }
-  if (payload === 'menu:site') { PURPOSE.set(key, 'Хочет открыть сайт'); await ctx.sendTo(userId, { text: '🌐 Наш сайт: https://dv-upakom.ru', attachments: [KEYBOARD] }); return; }
+  if (payload === 'menu:site') { await setPurpose(ctx, key, 'Хочет открыть сайт'); await ctx.sendTo(userId, { text: '🌐 Наш сайт: https://dv-upakom.ru', attachments: [KEYBOARD] }); return; }
   if (payload.indexOf('cat:') === 0) {
     const i = parseInt(payload.slice(4), 10);
     if (i >= 0 && i < SECTIONS.length) {
       const s = SECTIONS[i];
-      PURPOSE.set(key, 'Интересовался разделом «' + s[0] + '»');
+      await setPurpose(ctx, key, 'Интересовался разделом «' + s[0] + '»');
       await ctx.sendTo(userId, { text: '🛍 ' + s[0] + '\n' + s[1] + '\n\nПолный ассортимент и цены смотрите на сайте dv-upakom.ru или оставьте контакт — пришлём прайс.', attachments: [SINGLE_CONTACT_KB] });
     }
     return;
