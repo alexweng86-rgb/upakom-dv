@@ -175,8 +175,8 @@ const ANSWERS = {
     'Вс — выходной',
 
   unknown:
-    '🤔 Я пока не научился отвечать на этот вопрос, но обязательно помогу!\n' +
-    'Оставьте контакт — менеджер «ДВ Упаком» свяжется с вами и ответит.',
+    '🤔 Не нашёл точного ответа на ваш вопрос.\n\n' +
+    'Нажмите кнопку «Перезвоните мне» ниже — менеджер «ДВ Упаком» свяжется с вами, уточнит детали и поможет подобрать нужный товар (стаканчики, пакеты, упаковку и другое).',
   thanks:
     '🙌 Спасибо! Менеджер свяжется с вами в ближайшее время.\n' +
     'Если не хотите ждать — звоните: +7 (4217) 54-49-45 или 8 (963) 828-81-14.'
@@ -266,10 +266,10 @@ async function handleBotUpdate(upd, ctx) {
     }
   }
 
-  // Нераспознан: клиенту - запрос контакта, владельцу - вопрос
+  // Нераспознан: клиенту - запрос контакта кнопкой, владельцу - вопрос
   const from = [sender.first_name, sender.last_name].filter(Boolean).join(' ').trim() || ('ID ' + senderId);
   await setPurpose(ctx, String(senderId), 'Вопрос: ' + text);
-  await ctx.sendTo(senderId, { text: ANSWERS.unknown, attachments: [KEYBOARD] });
+  await ctx.sendTo(senderId, { text: ANSWERS.unknown, attachments: [CALLBACK_KB] });
   if (!isOwner) {
     await ctx.sendTo(ctx.OWNER, {
       text: '✉ Вопрос в MAX от ' + from + ' (id ' + senderId + '):\n\n' + text
@@ -324,6 +324,16 @@ const SINGLE_CONTACT_KB = {
   payload: {
     buttons: [
       [{ type: 'request_contact', text: '📞 Перезвоните мне' }]
+    ]
+  }
+};
+
+const CALLBACK_KB = {
+  type: 'inline_keyboard',
+  payload: {
+    buttons: [
+      [{ type: 'request_contact', text: '📞 Перезвоните мне' }],
+      [{ type: 'link', text: '🌐 Посмотреть каталог на сайте', url: 'https://dv-upakom.ru/#catalog' }]
     ]
   }
 };
