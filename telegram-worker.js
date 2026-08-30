@@ -242,7 +242,11 @@ async function handleBotUpdate(upd, ctx) {
     const verified = p.hash ? '\n✅ Номер подтверждён аккаунтом MAX' : '\n⚠️ Номер без подтверждения (прислан вручную)';
     const purposeText = (await getPurpose(ctx, String(senderId))) || 'Нажал кнопку «Перезвоните мне» без уточнения цели';
     if (!isOwner) {
-      await ctx.sendTo(ctx.OWNER, { text: info + phoneLine + nameLine + verified + '\n🎯 Цель: ' + purposeText + '\n—\nПрофиль: https://max.ru/' + senderId });
+      const mention = '[' + escMd(from || name || ('ID ' + senderId)) + '](max://user/' + senderId + ')';
+      await ctx.sendTo(ctx.OWNER, {
+        text: info + phoneLine + nameLine + verified + '\n🎯 Цель: ' + escMd(purposeText) + '\n—\nПрофиль: ' + mention + ' (id ' + senderId + ')',
+        format: 'markdown'
+      });
     }
     await clearPurpose(ctx, String(senderId));
     await ctx.sendTo(senderId, { text: ANSWERS.thanks });
@@ -272,9 +276,15 @@ async function handleBotUpdate(upd, ctx) {
   await ctx.sendTo(senderId, { text: ANSWERS.unknown, attachments: [CALLBACK_KB] });
   if (!isOwner) {
     await ctx.sendTo(ctx.OWNER, {
-      text: '✉ Вопрос в MAX от ' + from + ' (id ' + senderId + '):\n\n' + text
+      text: '✉ Вопрос в MAX от ' + '[' + escMd(from) + '](max://user/' + senderId + ')' + ' (id ' + senderId + '):\n\n' + escMd(text),
+      format: 'markdown'
     });
   }
+}
+
+// Экранирование markdown-спецсимволов в тексте, приходящем от пользователя
+function escMd(s) {
+  return String(s).replace(/([\\`*_{}\[\]()#+\-.!|>])/g, '\\$1');
 }
 
 function purposeLabel(a) {
